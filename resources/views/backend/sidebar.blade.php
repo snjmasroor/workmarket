@@ -4,7 +4,7 @@
                     <ul>
                         <li class="menu-title">Talent Profile</li>
                         <li class="active">
-                            <a href="index-2.html"><i class="fa fa-dashboard"></i> <span>My Profile</span></a>
+                            <a href="{{route('user.viewProfile')}}"><i class="fa fa-dashboard"></i> <span>My Profile</span></a>
                         </li>
 						<li>
                             <a href="doctors.html"><i class="fa fa-clipboard"></i> <span>Tests</span></a>

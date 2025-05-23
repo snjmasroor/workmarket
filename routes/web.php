@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,9 +16,12 @@ Auth::routes();
 All Normal Users Routes List
 --------------------------------------------
 --------------------------------------------*/
-Route::middleware(['auth', 'user-access:user'])->group(function () {
-  
+Route::middleware(['auth', 'user-access:user'])
+    ->prefix('user')
+    ->group(function () {
+
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/profile', [UserController::class, 'viewProfile'])->name('user.viewProfile');
 });
   
 /*------------------------------------------
@@ -27,7 +31,7 @@ All Admin Routes List
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:superadmin'])->group(function () {
   
-    Route::get('/admin/home', [HomeController::class, 'adminHome'])->name('superadmin.home');
+    Route::get('/superadmin/home', [HomeController::class, 'adminHome'])->name('superadmin.home');
 });
   
 /*------------------------------------------
@@ -37,7 +41,7 @@ All Admin Routes List
 --------------------------------------------*/
 Route::middleware(['auth', 'user-access:admin'])->group(function () {
   
-    Route::get('/superadmin/home', [HomeController::class, 'managerHome'])->name('admin.home');
+    Route::get('/admin/home', [HomeController::class, 'managerHome'])->name('admin.home');
 });
 
 

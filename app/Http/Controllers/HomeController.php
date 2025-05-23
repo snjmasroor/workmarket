@@ -34,7 +34,7 @@ class HomeController extends Controller
      */
     public function adminHome(): View
     {
-        return view('admin.index');
+        return view('super-admin.index');
     }
   
     /**
@@ -44,6 +44,6 @@ class HomeController extends Controller
      */
     public function managerHome(): View
     {
-        return view('super-admin.index');
+        return view('admin.index');
     }
 }
