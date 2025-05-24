@@ -16,6 +16,8 @@ Auth::routes();
 All Normal Users Routes List
 --------------------------------------------
 --------------------------------------------*/
+Route::get('/add-user', [UserController::class, 'store'])->name('add.user');
+
 Route::middleware(['auth', 'user-access:user'])
     ->prefix('user')
     ->group(function () {

@@ -7,16 +7,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Concerns\Flagable;
+
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
-
+    use HasFactory, Notifiable, SoftDeletes, Flagable;
+    // protected $table = 'users';
+    // protected $primaryKey = 'user_id';
+    // protected $keyType = 'string';
+    // public $incrementing = false;
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
+    
     protected $fillable = [
         'name',
         'email',
@@ -58,5 +65,10 @@ class User extends Authenticatable
         return new Attribute(
             get: fn ($value) =>  ["user", "superadmin", "admin"][$value],
         );
+    }
+
+    public function industry()
+    {
+        return $this->belongsTo(Industry::class);
     }
 }

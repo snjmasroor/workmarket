@@ -1,77 +1,183 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3-Step Registration Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .form-step {
+      display: none;
+    }
+    .form-step.active {
+      display: block;
+    }
+    .preview-img {
+      max-height: 200px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body class="bg-light">
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
-
-                        <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Name') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+<div class="container mt-5">
+  <div class="card shadow-lg">
+    <div class="card-header bg-primary text-white text-center">
+      <h4>User Registration</h4>
     </div>
+    <div class="card-body">
+      <form id="registrationForm" method="post" action="{{ route('add.user') }}">
+        @csrf
+        <!-- Step 1 -->
+        <div class="form-step active" id="step-1">
+          <h5 class="mb-3">Personal Details</h5>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">First name</label>
+              <input type="text" class="form-control" name="firstname" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Last name</label>
+              <input type="text" class="form-control" name="lastname" required />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" required name="email"/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-control" required  name="phone"/>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Address Line</label>
+            <input type="text" class="form-control" required  name="address"/>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Country</label>
+              <select class="form-select" name="country" required>
+                <option value="">Select Country</option>
+                <option value="USA">USA</option>
+                <option value="Canada">Canada</option>
+                <option value="UK">UK</option>
+                <option value="India">India</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">State/Province</label>
+              <input type="text" class="form-control" required name="state"/>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">ZIP Code</label>
+              <input type="text" class="form-control" name="zipcode" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">City</label>
+              <input type="text" class="form-control" required name="city"/>
+            </div>
+          </div>
+          <div class="text-end">
+            <button type="button" class="btn btn-primary" onclick="goToStep(2)">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="form-step" id="step-2">
+          <h5 class="mb-3">Account Credentials</h5>
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" name="username" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" name="confirm_password" required />
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(3)">Next</button>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="form-step" id="step-3">
+          <h5 class="mb-3">Upload Profile Image</h5>
+          <div class="mb-3">
+            <label class="form-label">Select Image</label>
+            <input type="file" class="form-control" id="imageUpload" accept="image/*" onchange="previewImage(event)" required />
+            <img id="imagePreview" class="preview-img d-none img-thumbnail" />
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(4)">Next</button>
+          </div>
+        </div>
+ <div class="form-step" id="step-4">
+          <h5 class="mb-3">Your Skills</h5>
+          <div class="mb-3">
+            <label class="form-label">Select Your Skills</label>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="Laravel" id="skillLaravel" name="skills">
+              <label class="form-check-label" for="skillLaravel">Laravel</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="SQL" id="skillSQL" name="skills">
+              <label class="form-check-label" for="skillSQL">SQL</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="JavaScript" id="skillJS" name="skills">
+              <label class="form-check-label" for="skillJS">JavaScript</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="Python" id="skillPython" name="skills">
+              <label class="form-check-label" for="skillPython">Python</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="Vue.js" id="skillVue" name="skills">
+              <label class="form-check-label" for="skillVue">Vue.js</label>
+            </div>
+            <!-- Add more as needed -->
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+            <button type="submit" class="btn btn-success">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-@endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    
+  function goToStep(step) {
+    document.querySelectorAll('.form-step').forEach(el => el.classList.remove('active'));
+    document.getElementById(`step-${step}`).classList.add('active');
+  }
+
+  function previewImage(event) {
+    const img = document.getElementById('imagePreview');
+    img.src = URL.createObjectURL(event.target.files[0]);
+    img.classList.remove('d-none');
+  }
+
+  document.getElementById('registrationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = $(this).serialize(); // Serialized form data (URL encoded)
+    console.log(formData);
+    alert('Registration completed successfully!');
+    // Implement backend submission logic here
+  });
+</script>
+
+</body>
+</html>

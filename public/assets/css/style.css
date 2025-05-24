@@ -121,7 +121,7 @@ a:focus {
 	outline: 0 none;
 }
 a {
-	color: #f7941d;
+	color: #007bff;
 }
 input,
 button,
@@ -433,15 +433,15 @@ table.table td h2 span {
 }
 .btn-primary {
 	border-color: transparent;
-	background-color: #f7941d;
+	background-color: #007bff;
 }
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-primary.active,
 .btn-primary:active,
 .open > .dropdown-toggle.btn-primary {
-	background-color: #f7941d;
-	border: 1px solid #f7941d;
+	background-color: #007bff;
+	border: 1px solid #007bff;
 	color: #fff;
 }
 .btn-primary.active.focus,
