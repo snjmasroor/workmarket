@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>3-Step Registration Form</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
@@ -27,7 +28,6 @@
     </div>
     <div class="card-body">
       <form id="registrationForm" method="post" action="{{ route('add.user') }}">
-        @csrf
         <!-- Step 1 -->
         <div class="form-step active" id="step-1">
           <h5 class="mb-3">Personal Details</h5>
@@ -91,7 +91,7 @@
           <h5 class="mb-3">Account Credentials</h5>
           <div class="mb-3">
             <label class="form-label">Username</label>
-            <input type="text" class="form-control" name="username" required />
+            <input type="text" class="form-control"  name="username" required />
           </div>
           <div class="mb-3">
             <label class="form-label">Password</label>
@@ -99,7 +99,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" name="confirm_password" required />
+            <input type="password" class="form-control" name="password_confirmation" required />
           </div>
           <div class="d-flex justify-content-between">
             <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
@@ -172,10 +172,40 @@
 
   document.getElementById('registrationForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const formData = $(this).serialize(); // Serialized form data (URL encoded)
-    console.log(formData);
-    alert('Registration completed successfully!');
-    // Implement backend submission logic here
+        const formData = $(this).serialize(); // Get all form data (name=John+Doe&email=...)
+        const actionUrl = $(this).attr('action'); // Get the URL from the form's 'action' attribute
+        const csrfToken = $('meta[name="csrf-token"]').attr('content'); // Get CSRF token if meta tag exists
+
+        console.log("Form Data:", formData);
+        console.log("Sending to URL:", actionUrl);
+
+        // Option 1: Using $.ajax() (Recommended for more control)
+        $.ajax({
+            url: actionUrl, // The URL to which the data is sent
+            type: 'POST',   // HTTP method (GET, POST, PUT, DELETE)
+            data: formData, // The serialized form data
+            headers: {
+                'X-CSRF-TOKEN': csrfToken // Send CSRF token for Laravel forms
+            },
+            success: function(response) {
+                // This function runs if the request is successful (HTTP status 200 OK)
+                console.log("Success Response:", response);
+                $('#responseMessage').text('Data sent successfully! Response: ' + JSON.stringify(response));
+                // You can perform actions here, e.g., update UI, redirect, etc.
+            },
+            error: function(xhr, status, error) {
+                // This function runs if the request fails (e.g., server error, validation errors)
+                console.error("Error Status:", status);
+                console.error("Error XHR:", xhr);
+                console.error("Error Message:", error);
+                let errorMessage = 'An error occurred.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+                $('#responseMessage').text('Error: ' + errorMessage);
+                // Handle specific error types (e.g., display validation errors)
+            }
+          });
   });
 </script>
 

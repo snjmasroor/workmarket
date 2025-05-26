@@ -23,13 +23,15 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    
+    protected $appends = ['active'];
     protected $fillable = [
         'name',
         'email',
         'password',
         'type'
     ];
+    public const FLAG_ACTIVE = 1;
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -70,5 +72,9 @@ class User extends Authenticatable
     public function industry()
     {
         return $this->belongsTo(Industry::class);
+    }
+    
+    public function getActiveAttribute() {
+        return ($this->flags & self::FLAG_ACTIVE) == self::FLAG_ACTIVE;
     }
 }

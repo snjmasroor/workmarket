@@ -3,8 +3,24 @@
                 <div id="sidebar-menu" class="sidebar-menu">
                     <ul>
                         <li class="menu-title">Talent Profile</li>
+                        @auth
+                        @if(auth()->user()->type === 'super_admin')
+                            <!-- Show all links for super admin -->
+                           
+                        @elseif(auth()->user()->type === 'admin')
+                            <!-- Show admin-specific links -->
+                          <li class="submenu">
+                           <a href="#"><i class="fa fa-user"></i> <span> Industry </span> <span class="menu-arrow"></span></a>
+                            <ul style="display: none;">
+								<li><a href="{{route('show.industry')}}">Show Industries</a></li>
+								<li><a href="{{route('show.skills')}}">Skills</a></li>
+								<li><a href="{{route('show.industry-skills')}}">Industry Skill</a></li>
+							</ul>
+                        </li>
+                        @else
+                            <!-- Regular user links -->
                         <li class="active">
-                            <a href="{{route('user.viewProfile')}}"><i class="fa fa-dashboard"></i> <span>My Profile</span></a>
+                            <a href="{{route('user.viewProfile')}}"><i class="fa fa-dashboard"></i> <span>My Profile {{ auth()->user()->type }}</span></a>
                         </li>
 						<li>
                             <a href="doctors.html"><i class="fa fa-clipboard"></i> <span>Tests</span></a>
@@ -34,6 +50,9 @@
                         <li>
                             <a href="calendar.html"><i class="fa fa-user"></i> <span>Accounts</span></a>
                         </li>
+                        @endif
+                    @endauth
+                       
                     </ul>
                 </div>
             </div>
