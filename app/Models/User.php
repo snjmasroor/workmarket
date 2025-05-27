@@ -23,7 +23,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $appends = ['active'];
+    protected $appends = ['active', 'user_image_url'];
     protected $fillable = [
         'name',
         'email',
@@ -73,8 +73,17 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Industry::class);
     }
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class);
+    }
     
     public function getActiveAttribute() {
         return ($this->flags & self::FLAG_ACTIVE) == self::FLAG_ACTIVE;
     }
+    public function getUserImageUrlAttribute ()
+    {
+        return base_path().'/public/storage/users/'.$this->user_id.'/'.$this->image;
+    }
+
 }

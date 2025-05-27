@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 class IndustrySkillController extends Controller
 {
    public function index() {
-        $industry_skills = IndustrySkill::all();   
+       $industry_skills = Industry::with('skills')->get();  
         return view('admin.industry-skill.index', compact('industry_skills'));
     }
     public function create()
@@ -43,5 +43,16 @@ class IndustrySkillController extends Controller
     $industry->skills()->sync($request->skill_ids);
               
         return redirect()->back()->with('success', 'Skill linked to industry successfully!');
+    }
+
+    public function getSkillsByIndustry(Request $request)
+    {
+        $industry = Industry::with('skills')->find($request->industry_id);
+
+        if ($industry) {
+            return response()->json($industry->skills);
+        }
+
+        return response()->json([]);
     }
 }

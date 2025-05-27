@@ -6,6 +6,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>3-Step Registration Form</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{asset('assets/css/select2.min.css')}}"> 
   <style>
     .form-step {
       display: none;
@@ -27,7 +28,7 @@
       <h4>User Registration</h4>
     </div>
     <div class="card-body">
-      <form id="registrationForm" method="post" action="{{ route('add.user') }}">
+      <form id="registrationForm" method="post" action="{{ route('add.user') }}" enctype="multipart/form-data">
         <!-- Step 1 -->
         <div class="form-step active" id="step-1">
           <h5 class="mb-3">Personal Details</h5>
@@ -112,7 +113,7 @@
           <h5 class="mb-3">Upload Profile Image</h5>
           <div class="mb-3">
             <label class="form-label">Select Image</label>
-            <input type="file" class="form-control" id="imageUpload" accept="image/*" onchange="previewImage(event)" required />
+            <input type="file" class="form-control" name="image" id="imageUpload" accept="image/*" onchange="previewImage(event)" required />
             <img id="imagePreview" class="preview-img d-none img-thumbnail" />
           </div>
           <div class="d-flex justify-content-between">
@@ -121,31 +122,34 @@
           </div>
         </div>
  <div class="form-step" id="step-4">
-          <h5 class="mb-3">Your Skills</h5>
-          <div class="mb-3">
-            <label class="form-label">Select Your Skills</label>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="Laravel" id="skillLaravel" name="skills">
-              <label class="form-check-label" for="skillLaravel">Laravel</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="SQL" id="skillSQL" name="skills">
-              <label class="form-check-label" for="skillSQL">SQL</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="JavaScript" id="skillJS" name="skills">
-              <label class="form-check-label" for="skillJS">JavaScript</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="Python" id="skillPython" name="skills">
-              <label class="form-check-label" for="skillPython">Python</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" value="Vue.js" id="skillVue" name="skills">
-              <label class="form-check-label" for="skillVue">Vue.js</label>
-            </div>
-            <!-- Add more as needed -->
-          </div>
+          <h5 class="mb-3">Your Industry and Skills</h5>
+<div class="mb-3">
+  <label class="form-label">Select Your Industry and Skills</label>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Industry</label>
+        <select name="industry_id" id="industry_id" class="form-control" required>
+          <option value="">-- Select Industry --</option>
+          @foreach($industry_skills as $industry)
+            <option value="{{ $industry->id }}">{{ $industry->name }}</option>
+          @endforeach
+        </select>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label>Skills</label>
+        <select class="form-control" id="skills" name="skill_ids[]" multiple>
+          <option value="">-- Select Skill --</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status (unchanged) -->
+                        
           <div class="d-flex justify-content-between">
             <button type="button" class="btn btn-secondary" onclick="goToStep(3)">Back</button>
             <button type="submit" class="btn btn-success">Submit</button>
@@ -156,7 +160,7 @@
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<script src="{{ asset('assets/js/select2.min.js') }}"></script>
 <script>
     
   function goToStep(step) {
@@ -170,42 +174,69 @@
     img.classList.remove('d-none');
   }
 
-  document.getElementById('registrationForm').addEventListener('submit', function(e) {
+  $('#registrationForm').on('submit', function (e) {
     e.preventDefault();
-        const formData = $(this).serialize(); // Get all form data (name=John+Doe&email=...)
-        const actionUrl = $(this).attr('action'); // Get the URL from the form's 'action' attribute
-        const csrfToken = $('meta[name="csrf-token"]').attr('content'); // Get CSRF token if meta tag exists
 
-        console.log("Form Data:", formData);
-        console.log("Sending to URL:", actionUrl);
+    const form = document.getElementById('registrationForm');
+    const formData = new FormData(form); // Automatically includes all inputs including file
 
-        // Option 1: Using $.ajax() (Recommended for more control)
-        $.ajax({
-            url: actionUrl, // The URL to which the data is sent
-            type: 'POST',   // HTTP method (GET, POST, PUT, DELETE)
-            data: formData, // The serialized form data
-            headers: {
-                'X-CSRF-TOKEN': csrfToken // Send CSRF token for Laravel forms
-            },
-            success: function(response) {
-                // This function runs if the request is successful (HTTP status 200 OK)
-                console.log("Success Response:", response);
-                $('#responseMessage').text('Data sent successfully! Response: ' + JSON.stringify(response));
-                // You can perform actions here, e.g., update UI, redirect, etc.
-            },
-            error: function(xhr, status, error) {
-                // This function runs if the request fails (e.g., server error, validation errors)
-                console.error("Error Status:", status);
-                console.error("Error XHR:", xhr);
-                console.error("Error Message:", error);
-                let errorMessage = 'An error occurred.';
-                if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
-                }
-                $('#responseMessage').text('Error: ' + errorMessage);
-                // Handle specific error types (e.g., display validation errors)
+     const actionUrl = $(this).attr('action'); // Replace with your actual route
+    const csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    $.ajax({
+        url: actionUrl,
+        type: 'POST',
+        data: formData,
+        contentType: false, // Important for file upload
+        processData: false, // Important for file upload
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        },
+        success: function (response) {
+            console.log("Success Response:", response);
+            $('#responseMessage').text('Data sent successfully! Response: ' + JSON.stringify(response));
+        },
+        error: function (xhr, status, error) {
+            console.error("Error Status:", status);
+            console.error("Error XHR:", xhr);
+            console.error("Error Message:", error);
+            let errorMessage = 'An error occurred.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
             }
-          });
+            $('#responseMessage').text('Error: ' + errorMessage);
+        }
+    });
+});
+</script>
+
+<script>
+  $(document).ready(function () {
+    $('#industry_id').on('change', function () {
+      var industryId = $(this).val();
+
+      $('#skills').html('<option value="">Loading...</option>');
+
+      if (industryId) {
+        $.ajax({
+          url: '{{ route("get.skills.by.industry") }}',
+          type: 'GET',
+          data: { industry_id: industryId },
+          success: function (response) {
+            $('#skills').empty();
+            if (response.length > 0) {
+              $.each(response, function (key, skill) {
+                $('#skills').append('<option value="' + skill.id + '">' + skill.name + '</option>');
+              });
+            } else {
+              $('#skills').append('<option value="">No Skills Available</option>');
+            }
+          }
+        });
+      } else {
+        $('#skills').html('<option value="">-- Select Skill --</option>');
+      }
+    });
   });
 </script>
 

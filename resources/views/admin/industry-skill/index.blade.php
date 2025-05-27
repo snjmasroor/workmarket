@@ -33,41 +33,57 @@
               </div>
               <div class="row">
                 <div class="col-sm-12">
-                  <table class="datatable table table-stripped dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
-                    <thead>
-                      <tr role="row">
-                        <th class="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending" style="width: 95.6406px;">#</th>
-                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Department Name: activate to sort column ascending" style="width: 423.031px;">skill Name</th>
-                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 271.5px;">Status</th>
-                        <th class="text-right sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: 197.828px;">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody> <?php $counter = 1;?> @forelse ($industry_skills as $skill) <tr role="row" class="odd">
-                        <td class="sorting_1">{{--$counter --}}</td>
-                        <td>{{-- $skill->name --}}</td>
-                        <td>
-                          <span class="custom-badge {{ $skill->active ? 'status-green' : 'status-red' }}">
-                                {{-- $skill->active ? 'Active' : 'Deactive' --}}
-                            </span>
-                        </td>
-                        <td class="text-right">
-                          <div class="dropdown dropdown-action">
-                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                              <i class="fa fa-ellipsis-v"></i>
+                  <table class="datatable table table-striped dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
+    <thead>
+        <tr role="row">
+            <th>#</th>
+            <th>Industry Name</th>
+            <th>Skills</th>
+            <th>Status</th>
+            <th class="text-right">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @php $counter = 1; @endphp
+        @forelse ($industry_skills as $industry)
+            <tr role="row">
+                <td>{{ $counter++ }}</td>
+                <td>{{ $industry->name }}</td>
+                <td>
+                    @if($industry->skills->count())
+                        {{ $industry->skills->pluck('name')->implode(', ') }}
+                    @else
+                        <em>No Skills Assigned</em>
+                    @endif
+                </td>
+                <td>
+                    <span class="custom-badge {{ $industry->active ? 'status-green' : 'status-red' }}">
+                        {{ $industry->active ? 'Active' : 'Deactive' }}
+                    </span>
+                </td>
+                <td class="text-right">
+                    <div class="dropdown dropdown-action">
+                        <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">
+                                <i class="fa fa-pencil m-r-5"></i> Edit
                             </a>
-                            <div class="dropdown-menu dropdown-menu-right">
-                              <a class="dropdown-item" href="edit-department.html">
-                                <i class="fa fa-pencil m-r-5"></i> Edit </a>
-                              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_department">
-                                <i class="fa fa-trash-o m-r-5"></i> Delete </a>
-                            </div>
-                          </div>
-                        </td> <?php $counter++;?>
-                      </tr> @empty
-                       </tr> 
-                        <td> No Data in Database</td>
-                      </tr>
-                      @endforelse </tbody>
+                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_department">
+                                <i class="fa fa-trash-o m-r-5"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="5" class="text-center">No Data in Database</td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
                 </div>
               </div>
             </div>

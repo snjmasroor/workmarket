@@ -14,5 +14,6 @@ class IndusrtyController extends Controller
         
         return view('admin.show-industries', compact('industries'));
     }
+
     
 }

@@ -48,5 +48,5 @@ Route::middleware(['auth', 'user-access:admin'])->group(function () {
     // Route::get('/admin/industries', [IndusrtyController::class, 'index'])->name('show.industry');
     
 });
-
+Route::get('/get-skills', [App\Http\Controllers\IndustrySkillController::class, 'getSkillsByIndustry'])->name('get.skills.by.industry');
 

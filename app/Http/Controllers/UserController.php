@@ -7,16 +7,18 @@ use App\Models\User;
 use App\Models\Address;
 use Hash;
 use Illuminate\Support\Str;
-
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 class UserController extends Controller
 {
     
     public function viewProfile(){
-        // dd('asdasd');
-        return view('user.profile');
+        $user = User::with('industry')->where('id', auth()->id())->first();
+        return view('user.profile', compact('user'));
     }
 
     public function store(Request $request) {
+        
         $request->validate([
             'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
@@ -25,7 +27,6 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
-
         // // 2. Validate Address Data
         $request->validate([
             'address' => ['required', 'string', 'max:255'],
@@ -35,26 +36,43 @@ class UserController extends Controller
             'city' => ['required', 'string', 'max:255'],
         ]);
 
-        // 3. Validate Skills Data
-        // $request->validate([
-        //     'skills' => ['nullable', 'array'],
-        //     'skills.*' => [
-        //         'string',
-        //         Rule::in(['Laravel', 'SQL', 'JavaScript', 'Python', 'Vue.js']), // Ensure selected skills are from your predefined list
-        //     ],
-        // ]);
-
+       
         // Create the User
         $user = new User();
-        $user->user_id = (String) Str::uuid();
-        $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
-        $user->name = $request->firstname.' '.$request->lastname; 
-        $user->email = $request->email;
-        $user->phone = $request->phone;
-        $user->username = $request->username;
-        $user->password = Hash::make($request->password);
-        $user->addFLag(User::FLAG_ACTIVE); // Hash the password
+         $user->user_id = (String) Str::uuid();
+         $user->firstname = $request->firstname;
+         $user->lastname = $request->lastname;
+         $user->name = $request->firstname.' '.$request->lastname; 
+         $user->email = $request->email;
+         $user->phone = $request->phone;
+         $user->username = $request->username;
+         $user->password = Hash::make($request->password);
+         $user->industry_id = $request->industry_id;
+        
+        $file = $request->file('image');
+        $path = public_path('storage/users');// You can change this path
+        // Create directory if it doesn't exist
+        if ($request->hasFile('image')) { 
+            // Create a unique filename
+            $file = $request->file('image');
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // ✅ For Intervention Image v3 — just pass 'gd' or 'imagick' as string
+            // $manager = new ImageManager('gd'); // or 'imagick'
+            $manager = new ImageManager(new Driver());
+            // Create the image
+            $image = $manager->read($file)->resize(800, 800);
+
+            $path = public_path('storage/users');
+            if (!file_exists($path)) {
+                mkdir($path, 0755, true);
+            }
+
+            // Save the image
+            $image->save($path . '/' . $filename);
+        }
+    // Example: Save user with image path
+        $user->image = $filename;
         if(!$user->save()) {
             return redirect(route('register'))->with(['req_error' => 'There is some error!']);
         }
@@ -68,21 +86,15 @@ class UserController extends Controller
         $address->postal_code = $request->zipcode;
         $address->city = $request->city;
         $address->addFLag(Address::FLAG_ACTIVE);
-
         if(!$address->save()) {
             return redirect(route('register'))->with(['req_error' => 'There is some error!']);
         }
-        print_r($request->all());
-
         // Create User Skills
-        // if ($request->has('skills') && is_array($request->skills)) {
-        //     foreach ($request->skills as $skill) {
-        //         $user->skills()->create([
-        //             'skill_name' => $skill,
-        //         ]);
-        //     }
-        // }
+        if ($request->has('skill_ids')) {
+            $user->skills()->sync($request->skill_ids);
+            auth()->login($user);
+        }
 
-       // return redirect()->back()->with('success', 'Registration successful!');
+       return redirect()->route('home');//return redirect()->back()->with('success', 'Registration successful!');
     }
 }

@@ -1,6 +1,8 @@
 <?php
 use Illuminate\Support\Str;
 use Twilio\Rest\Client;
+use Intervention\Image\Facades\Image;
+
 
 if (!function_exists('api_success')) {
 	function api_success($message, $data, $response = 200) {
@@ -50,20 +52,60 @@ if (!function_exists('getToken')) {
 
 if (!function_exists('addFile')) {
 	function addFile($file, $path, $width = '1000', $height = '1000', $resize = false) {
-		$destinationPath = $path;
-		$file = $file;
-		$name = rand(99, 9999999) . '.' . $file->extension();
-		$background = \Image::canvas($width, $height);
-		//$img = \Image::make($file)->fit($width, $height);
-		   $img = \Image::make($file)->resize($width, $height, function ($c) {
-             $c->aspectRatio();
-             $c->upsize();
-         });
-		$background->insert($img, 'center');
-		$background->save($destinationPath . '/' . $name);
-		return $name;
-	}
+    if (!$file) {
+        return null;
+    }
+
+    $name = rand(99, 9999999) . '.' . $file->extension();
+    $background = \Image::canvas($width, $height);
+    $img = \Image::make($file)->resize($width, $height, function ($c) {
+        $c->aspectRatio();
+        $c->upsize();
+    });
+
+    $background->insert($img, 'center');
+    $background->save($path . '/' . $name);
+
+    return $name;
 }
+}
+if (!function_exists('addImage')) {
+    function addImage($file, $directory = 'uploads', $width = 1000, $height = 1000, $resize = true)
+    {
+        if (!$file || !$file->isValid()) {
+            return null; // file is invalid or not uploaded
+        }
+
+        // Generate unique filename
+        $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+        // Define full path to save
+        $destinationPath = public_path($directory);
+
+        // Create directory if it doesn't exist
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        // Create the image instance
+        $image = Image::make($file);
+
+        if ($resize) {
+            // Resize with aspect ratio
+            $image->resize($width, $height, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+        }
+
+        // Save image
+        $image->save($destinationPath . '/' . $filename);
+
+        // Return the path (relative to public folder)
+        return $directory . '/' . $filename;
+    }
+}
+
 
 if (!function_exists('generate_token')) {
 	function generate_token($customer) {

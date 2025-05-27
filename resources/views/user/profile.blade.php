@@ -71,16 +71,16 @@
     <div>
       <img src="https://via.placeholder.com/80" alt="User Image">
       <div class="username">
-      <h4 class="ml-5">Huzaifa Mughal</h4>
-      <p class="ml-5 mb-0">Computer Engineer | Huzaifa Mughal</p>
+      <h4 class="ml-5">{{ auth()->user()->name }}</h4>
+      <p class="ml-5 mb-0"> {{ $user->industry->name }} | {{ $user->firstname }}  {{ $user->lastname }}</p>
       <small class="ml-5">DeSoto, TX 75115</small>
     </div>
     </div>
     <div class="text-right">
       <button class="btn btn-primary">PROFILE SETTINGS</button>
       <p class="mb-0">
-        📧 huzaifa.snigs@gmail.com<br>
-        📞 W: (940) 531-9944
+        huzaifa.snigs@gmail.com<br>
+         W: (940) 531-9944
       </p>
     </div>
   </div>
@@ -103,7 +103,32 @@
 
       <div class="tab-content">
         <div class="tab-pane show active" id="solid-rounded-justified-tab1">
-          Tab content 1
+          <div class="userid">
+            User ID: 98882311
+          </div>
+          <div class="profile-url">
+            URL : https://www.workmarket.com/profile/98882311
+          </div>
+          <div class="labor">
+            <h3 class="labor-header">Labor Clouds</h3>
+            <p class="para">You are not a member of any Labor Clouds. Join Labor Clouds to be eligible for more assignments.</p>
+          </div>
+          <div class="labor-cloud">
+            <a href="" class="btn btn-success">JOIN LABOR CLOUDS </a>
+          </div>
+          <br>
+          <div class="test">
+            <h3 class="test-head"> Tests</h3>
+            <p class="test-para">No tests have been completed.</p>
+          </div>
+          <div class="labor-cloud">
+            <a href="" class="btn btn-success">Take Test </a>
+          </div>
+          <br>
+          <div class="labor">
+            <h3 class="labor-header">Agreements</h3>
+            <p class="para">No agreements have been signed.</p>
+          </div>
         </div>
         <div class="tab-pane" id="solid-rounded-justified-tab2">
           Tab content 2

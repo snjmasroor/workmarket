@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Industry;
+use App\Models\Skill;
 
 class RegisterController extends Controller
 {
@@ -68,5 +70,12 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+    }
+
+ 
+    public function showRegistrationForm()
+    {
+        $industry_skills = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->with('skills')->get();
+        return view('auth.register', compact('industry_skills'));
     }
 }

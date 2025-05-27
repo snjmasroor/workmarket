@@ -17,6 +17,14 @@
 								<li><a href="{{route('show.industry-skills')}}">Industry Skill</a></li>
 							</ul>
                         </li>
+                        <li class="submenu">
+                           <a href="#"><i class="fa fa-user"></i> <span> Jobs </span> <span class="menu-arrow"></span></a>
+                            <ul style="display: none;">
+								<li><a href="{{route('show.jobs')}}">Show Jobs</a></li>
+								<li><a href="{{route('show.skills')}}">Skills</a></li>
+								<li><a href="{{route('show.industry-skills')}}">Industry Skill</a></li>
+							</ul>
+                        </li>
                         @else
                             <!-- Regular user links -->
                         <li class="active">
