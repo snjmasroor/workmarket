@@ -13,13 +13,23 @@ class UserAccess
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, $userType): Response
+   public function handle(Request $request, Closure $next, ...$userTypes): Response
     {
         
-        if(auth()->user()->type == $userType){
-            return $next($request);
-        }
-          
-        return response()->json(['You do not have permission to access for this page.']);
+        $types = array_map('strtolower', $userTypes); // ← Converts "admin,superadmin" to ['admin', 'superadmin']
+    $currentUserType = strtolower(auth()->user()->type);
+
+    // \Log::info('User type: ' . $currentUserType);
+    // \Log::info('Allowed types: ', $types);
+
+    if (auth()->check() && in_array($currentUserType, $types)) {
+        return $next($request);
+    }
+
+    return response()->json([
+        'message' => 'Access denied',
+        'user_type' => $currentUserType,
+        'allowed_types' => $types
+    ], 403);
     }
 }

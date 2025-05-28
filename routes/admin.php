@@ -6,7 +6,7 @@ use App\Http\Controllers\SkillController;
 use App\Http\Controllers\IndustrySkillController;
 use App\Http\Controllers\JobController;
 
-  Route::middleware(['auth', 'user-access:admin'])->prefix('admin')->group(function () {
+  Route::middleware(['auth', 'user-access:admin,superadmin'])->prefix('admin')->group(function () {
         Route::get('/industries', [IndusrtyController::class, 'index'])->name('show.industry');
         Route::get('/skills', [SkillController::class, 'index'])->name('show.skills');
 
@@ -19,6 +19,12 @@ use App\Http\Controllers\JobController;
         Route::get('/jobs/create', [JobController::class, 'create'])->name('jobs.create');
         Route::get('/jobs', [JobController::class, 'index'])->name('show.jobs');
         Route::post('/jobs/store', [JobController::class, 'store'])->name('job.store');
+        //edit jobs
+        Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
+        Route::put('/jobs/{job}/update', [JobController::class, 'update'])->name('jobs.update');
+        
+
 
     });
+
 ?>

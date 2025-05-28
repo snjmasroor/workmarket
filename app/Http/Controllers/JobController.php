@@ -9,13 +9,14 @@ use App\Models\IndustrySkill;
 use App\Models\Job;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class JobController extends Controller
 {
     //
     public function index() {
-        $jobs = Job::get();  
-        return view('admin.jobs.index', compact('jobs'));
+           $jobs = Job::with('industry')->get();
+          return view('admin.jobs.index', compact('jobs'));
     }
 
     public function create() {
@@ -24,47 +25,69 @@ class JobController extends Controller
         return view('admin.jobs.create', compact('industries', 'skills'));
     }
 
-    public function store(Request $request) {
+   public function store(Request $request) {
         $request->validate([
-          'title' => 'required|string|max:255',
-          'description' => 'required|string',
-           'budget' => 'required|numeric|min:1',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'budget' => 'required|numeric|min:1',
             'jobType' => 'required|in:fixed,hourly',
             'jobLocation' => 'required|in:remote,on-site',
-         ]);
-        //dd($request->all());
-        $job = new Job;
-        $job->user_id = auth()->user()->id;
-        $job->title =  $request->title;
-        $job->description = $request->description;
-        $job->industry_id = $request->industry_id;
-        $job->budget = $request->budget;
-        $formattedDate = Carbon::createFromFormat('d/m/Y', $request->deadline)->format('Y-m-d');
-        $job->deadline = $formattedDate;
-        if ($request->jobType == 'fixed') {
-            $job->addFLag(Job::FLAG_FIXED);    
-        }else {
-            $job->addFLag(Job::FLAG_HOURLY);
-        }
-        if ($request->jobLocation == 'remote') {
-            $job->addFLag(Job::FLAG_REMOTE);    
-        }else {
-            $job->addFLag(Job::FLAG_ONSITE);
-        }
-        $job->addFLag(Job::FLAG_IN_PROGRESS);
-        if ($request->status == '1') {
-            $job->addFLag(Job::FLAG_ACTIVE);
-        }
+            'industry_id' => 'required|exists:industries,id',
+            'deadline' => 'required|date_format:d/m/Y|after:today',
+            // 'skill_ids' => 'required|array',
+            // 'skill_ids.*' => 'exists:skills,id',
+            'status' => 'nullable|in:1,0',
+        ]);
         
-        $job->skills()->sync($request->skill_ids);
 
-        if(!$job->save()) {
-            return redirect(route('jobs.create'))->with(['req_error' => 'There is some error!']);
+        try {
+            DB::beginTransaction();
+
+            $job = new Job;
+            $job->user_id = auth()->id();
+            $job->title = $request->title;
+            $job->description = $request->description;
+            $job->industry_id = $request->industry_id;
+            $job->budget = $request->budget;
+            $job->deadline = Carbon::createFromFormat('d/m/Y', $request->deadline)->format('Y-m-d');
+
+        // Flags
+            $job->addFlag($request->jobType === 'fixed' ? Job::FLAG_FIXED : Job::FLAG_HOURLY);
+            $job->addFlag($request->jobLocation === 'remote' ? Job::FLAG_REMOTE : Job::FLAG_ONSITE);
+            $job->addFlag(Job::FLAG_IN_PROGRESS);
+
+            if ($request->status == '1') {
+                $job->addFlag(Job::FLAG_ACTIVE);
+            }
+
+            // Save job — this MUST happen first
+            $job->save();
+
+        if (!$job->exists) {
+            throw new \Exception("Job was not saved to DB.");
         }
 
-       return redirect(route('show.jobs'))->with(['req_success' => 'Your Job information has been successfully saved']);
+        // Attach skills with flags
+        if ($request->has('skill_ids')) {
+                $job->skills()->sync($request->skill_ids);
+            
+            }
+            DB::commit();
+            return redirect()->route('jobs.index')->with('success', 'Job created.');
 
-
-        
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Job creation failed', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Job creation failed: ' . $e->getMessage());
+        }
     }
+
+
+    public function edit($id) {
+        $job = Job::findOrFail($id);
+        $industries = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->get();
+        $skills = Skill::all();
+        return view('admin.jobs.edit', compact('job', 'industries', 'skills'));
+    }
+
 }

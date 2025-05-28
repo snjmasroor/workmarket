@@ -35,49 +35,73 @@
                 <div class="col-sm-12">
                   <table class="datatable table table-striped dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                     <thead>
-                        <tr role="row">
-                            <th>#</th>
-                            <th>title</th>
-                            <th>description</th>
-                            <th>industry</th>
-                            <th>budget</th>
-                            <th>deadline</th>
-                            <th>Status</th>
-                            <th class="text-right">Action</th>
-                        </tr>
-                    </thead>
-                <tbody>
-                    @php $counter = 1; @endphp
-                        <tr role="row">
-                            <td>{{ $counter++ }}</td>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <span class="custom-badge {{-- $industry->active ? 'status-green' : 'status-red' --}}">
-                                    {{-- $industry->active ? 'Active' : 'Deactive' --}}
-                                </span>
-                            </td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-ellipsis-v"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#">
-                                            <i class="fa fa-pencil m-r-5"></i> Edit
-                                        </a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_department">
-                                            <i class="fa fa-trash-o m-r-5"></i> Delete
-                                        </a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    
-                        <tr>
-                            <td colspan="5" class="text-center">No Data in Database</td>
-                        </tr>
-                </tbody>
+    <tr role="row">
+        <th>#</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Industry</th>
+        <th>Budget</th>
+        <th>Deadline</th>
+        <th>Status</th>
+        <th class="text-right">Action</th>
+    </tr>
+</thead>
+<tbody>
+    @forelse ($jobs as $index => $job)
+        <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $job->title }}</td>
+            <td>{{ Str::limit($job->description, 50) }}</td>
+            <td>{{ $job->industry->name ?? 'N/A' }}</td>
+            <td>${{ number_format($job->budget, 2) }}</td>
+            <td>{{ \Carbon\Carbon::parse($job->deadline)->format('d M, Y') }}</td>
+            <td>
+             @php
+    $statuses = [
+        'active' => 'success',
+        'fixed' => 'primary',
+        'hourly' => 'info',
+        'remote' => 'secondary',
+        'onsite' => 'dark',
+        'open' => 'outline-success',
+        'in_progress' => 'warning text-white',
+        'completed' => 'success',
+        'cancelled' => 'danger',
+    ];
+@endphp
+
+@foreach ($statuses as $key => $color)
+    @if ($job->$key)
+        <span class="btn btn-{{ $color }}">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
+    @endif
+@endforeach
+            </td>
+            <td class="text-right">
+                <div class="dropdown dropdown-action">
+                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="{{ route('jobs.edit', $job->id) }}">
+                            <i class="fa fa-pencil m-r-5"></i> Edit
+                        </a>
+                        {{-- <form action="{{ route('jobs.destroy', $job->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="dropdown-item">
+                                <i class="fa fa-trash-o m-r-5"></i> Delete
+                            </button>
+                        </form> --}}
+                    </div>
+                </div>
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="8">No jobs found.</td>
+        </tr>
+    @endforelse
+</tbody>
 </table>
                 </div>
               </div>

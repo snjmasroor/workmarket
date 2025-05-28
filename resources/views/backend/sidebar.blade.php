@@ -4,9 +4,24 @@
                     <ul>
                         <li class="menu-title">Talent Profile</li>
                         @auth
-                        @if(auth()->user()->type === 'super_admin')
+                        @if(auth()->user()->type === 'superadmin')
                             <!-- Show all links for super admin -->
-                           
+                            <li class="submenu">
+                           <a href="#"><i class="fa fa-user"></i> <span> Industry </span> <span class="menu-arrow"></span></a>
+                            <ul style="display: none;">
+								<li><a href="{{route('show.industry')}}">Show Industries</a></li>
+								<li><a href="{{route('show.skills')}}">Skills</a></li>
+								<li><a href="{{route('show.industry-skills')}}">Industry Skill</a></li>
+							</ul>
+                        </li>
+                        <li class="submenu">
+                           <a href="#"><i class="fa fa-user"></i> <span> Jobs </span> <span class="menu-arrow"></span></a>
+                            <ul style="display: none;">
+								<li><a href="{{route('show.jobs')}}">Show Jobs</a></li>
+								<li><a href="{{route('show.skills')}}">Skills</a></li>
+								<li><a href="{{route('show.industry-skills')}}">Industry Skill</a></li>
+							</ul>
+                        </li>
                         @elseif(auth()->user()->type === 'admin')
                             <!-- Show admin-specific links -->
                           <li class="submenu">

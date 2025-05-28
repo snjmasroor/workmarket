@@ -28,4 +28,13 @@ class Skill extends Model
                     ->withPivot('industry_skill_id', 'flags')
                     ->withTimestamps();
     }
+
+    public function jobs()
+    {
+        return $this->belongsToMany(Job::class, 'job_skills', 'skill_id', 'job_id')
+                    ->withPivot('id', 'flags')
+                    ->withTimestamps();
+    }
+
+   
 }

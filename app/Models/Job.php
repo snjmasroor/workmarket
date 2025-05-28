@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Concerns\Flagable;
+use App\Models\Skill;
+use App\Models\JobSkill;
 
 class Job extends Model
 {
+    protected $fillable = [
+    'user_id', 'title', 'description', 'industry_id', 'budget', 'deadline', 'flags'];
     protected $table = 'post_jobs';
 
     protected $appends = ['active', 'fixed', 'hourly', 'remote', 'onsite', 'open', 'in_progress', 'completed', 'cancelled'];
@@ -74,9 +78,12 @@ class Job extends Model
     /**
      * The skills required for this job.
      */
-    public function skills()
+
+     public function skills()
     {
-        return $this->belongsToMany(Skill::class, 'job_skill');
+        return $this->belongsToMany(Skill::class, 'job_skills', 'job_id', 'skill_id')
+                    ->withPivot('id', 'flags')
+                    ->withTimestamps();
     }
     
 }
