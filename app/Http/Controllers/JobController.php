@@ -16,6 +16,7 @@ class JobController extends Controller
 {
     //
     public function index() {
+        
            $jobs = Job::with('industry')->get();
           return view('admin.jobs.index', compact('jobs'));
     }
@@ -23,73 +24,94 @@ class JobController extends Controller
     public function create() {
         $industries = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->get();
         $skills = Skill::whereRaw('`flags` & ? = ?', [Skill::FLAG_ACTIVE, Skill::FLAG_ACTIVE])->get();
-        return view('admin.jobs.create', compact('industries', 'skills'));
+        return view('admin.jobs.test', compact('industries', 'skills'));
     }
 
    public function store(Request $request) {
+    
 
-       $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'budget' => 'required|numeric|min:1',
-            'jobType' => 'required|in:fixed,hourly',
-            'jobLocation' => 'required|in:remote,onsite',
-            'industry_id' => 'required|exists:industries,id',
-            'deadline' => 'required|date_format:d/m/Y|after:today',
-            'start_date' => 'required|date_format:d/m/Y|after:today',
-            'attachments' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
-            'status' => 'nullable|in:1,0',
-        ]);
+    //    $request->validate([
+    //         'title' => 'required|string|max:255',
+    //         'description' => 'required|string',
+    //         'budget' => 'required|numeric|min:1',
+    //         'jobType' => 'required|in:fixed,hourly',
+    //         'jobLocation' => 'required|in:remote,onsite',
+    //         'industry_id' => 'required|exists:industries,id',
+    //         'deadline' => 'required|date_format:d/m/Y|after:today',
+    //         'start_date' => 'required|date_format:d/m/Y|after:today',
+    //         'attachments' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
+    //         'status' => 'nullable|in:1,0',
+    //     ]);
 
         try {
             DB::beginTransaction();
 
-            $job = new Job;
-            $job->user_id = auth()->id();
-            $job->title = $request->title;
-            $job->industry_id = $request->industry_id;
-            $job->budget = $request->budget;
-            $job->state = $request->state;
-            $job->city = $request->city;
-            $job->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date)->format('Y-m-d');
-            $job->deadline = Carbon::createFromFormat('d/m/Y', $request->deadline)->format('Y-m-d');
-            $job->address = $request->address;
-            $job->zip = $request->zip;
-            $job->radius = $request->radius;
-            $job->estimated_hours = $request->estimated_hours;
-            $job->payment_terms = $request->payment_terms;
-            $job->payment_type = $request->payment_type;
-            $job->terms = htmlspecialchars($request->terms);
-            $job->conditions = htmlspecialchars($request->conditions);
-            $job->nda_requirement = htmlspecialchars($request->nda_requirement);
-            $job->terms_acceptance = htmlspecialchars($request->terms_acceptance);
-            $job->description = htmlspecialchars($request->description);
+            // $job = new Job;
+            // $job->user_id = auth()->id();
+            // $job->title = $request->title;
+            // $job->industry_id = $request->industry_id;
+            // $job->budget = $request->budget;
+            // $job->state = $request->state;
+            // $job->city = $request->city;
+            // $job->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date)->format('Y-m-d');
+            // $job->deadline = Carbon::createFromFormat('d/m/Y', $request->deadline)->format('Y-m-d');
+            // $job->address = $request->address;
+            // $job->zip = $request->zip;
+            // $job->radius = $request->radius;
+            // $job->estimated_hours = $request->estimated_hours;
+            // $job->payment_terms = $request->payment_terms;
+            // $job->payment_type = $request->payment_type;
+            // $job->terms = htmlspecialchars($request->terms);
+            // $job->conditions = htmlspecialchars($request->conditions);
+            // $job->nda_requirement = htmlspecialchars($request->nda_requirement);
+            // $job->terms_acceptance = htmlspecialchars($request->terms_acceptance);
+            // $job->description = htmlspecialchars($request->description);
 
-            // Add flags
-            $job->addFlag($request->jobType === 'fixed' ? Job::FLAG_FIXED : Job::FLAG_HOURLY);
-            $job->addFlag($request->jobLocation === 'remote' ? Job::FLAG_REMOTE : Job::FLAG_ONSITE);
-            $job->addFlag(Job::FLAG_IN_PROGRESS);
-            if ($request->status == '1') {
-                $job->addFlag(Job::FLAG_ACTIVE);
-            }
+            // // Add flags
+            // $job->addFlag($request->jobType === 'fixed' ? Job::FLAG_FIXED : Job::FLAG_HOURLY);
+            // $job->addFlag($request->jobLocation === 'remote' ? Job::FLAG_REMOTE : Job::FLAG_ONSITE);
+            
+            // if ($request->status == '1') {
+            //     $job->addFlag(Job::FLAG_ACTIVE);
+            // }
 
-            $job->save();
+            // if(auth()->user()->type== "superadmin") {
+            //    if ($request->status_admin == 'open') {
+            //         $job->addFlag(Job::FLAG_OPEN);
 
-            if ($request->hasFile('attachments')) {
-                $name = rand(99, 9999999);
-                $extension = $request->attachments->getClientOriginalExtension();
-                $fileNameToStore = $name . '.' . $extension;
-                $path = $request->attachments->storeAs("public/jobs/attachments/{$job->id}/", $fileNameToStore);
-                $job->attachments = "jobs/attachments/{$job->id}/{$fileNameToStore}";
-                $job->save();
-            }
+            //     }else if ($request->status_admin == 'in_progress') {
+            //             $job->addFlag(Job::FLAG_IN_PROGRESS);
 
-            if ($request->has('skill_ids')) {
-                $job->skills()->sync($request->skill_ids);
-            }
+            //     } else if ($request->status_admin == 'completed') {
+            //         $job->addFlag(Job::FLAG_COMPLETED);
+
+            //     } else if ($request->status_admin == 'cancelled') {
+            //         $job->addFlag(Job::FLAG_CANCELLED);
+
+            //     }
+            // }else {
+            //     $job->addFlag(Job::FLAG_IN_PROGRESS);
+            // }
+
+            // $job->save();
+
+            // if ($request->hasFile('attachments')) {
+            //     $name = rand(99, 9999999);
+            //     $extension = $request->attachments->getClientOriginalExtension();
+            //     $fileNameToStore = $name . '.' . $extension;
+            //     $path = $request->attachments->storeAs("public/jobs/attachments/{$job->id}/", $fileNameToStore);
+            //     $job->attachments = "jobs/attachments/{$job->id}/{$fileNameToStore}";
+            //     $job->save();
+            // }
+
+            // if ($request->has('skill_ids')) {
+            //     $job->skills()->sync($request->skill_ids);
+            // }
+
+
 
             DB::commit();
-            return redirect()->route('show.jobs')->with('success', 'Job created.');
+            // return redirect()->route('show.jobs')->with('success', 'Job created.');
 
         } catch (\Exception $e) {
             DB::rollBack();

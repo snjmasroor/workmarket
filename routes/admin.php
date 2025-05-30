@@ -5,6 +5,8 @@ use App\Http\Controllers\IndusrtyController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\IndustrySkillController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\JobSpacification;
+
 
   Route::middleware(['auth', 'user-access:admin,superadmin'])->prefix('admin')->group(function () {
         Route::get('/industries', [IndusrtyController::class, 'index'])->name('show.industry');
@@ -22,6 +24,11 @@ use App\Http\Controllers\JobController;
         //edit jobs
         Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
         Route::put('/jobs/{job}/update', [JobController::class, 'update'])->name('jobs.update');
+        
+        
+        // Job Specifications
+        Route::get('/jobs/specifications', [JobSpacification::class, 'index'])->name('show.jobs.specifications');
+        
         
 
 

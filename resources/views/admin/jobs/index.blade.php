@@ -57,24 +57,24 @@
             <td>{{ \Carbon\Carbon::parse($job->deadline)->format('d M, Y') }}</td>
             <td>
              @php
-    $statuses = [
-        'active' => 'success',
-        'fixed' => 'primary',
-        'hourly' => 'info',
-        'remote' => 'secondary',
-        'onsite' => 'dark',
-        'open' => 'outline-success',
-        'in_progress' => 'warning text-white',
-        'completed' => 'success',
-        'cancelled' => 'danger',
-    ];
-@endphp
+                $statuses = [
+                    'active' => 'success',
+                    'fixed' => 'primary',
+                    'hourly' => 'info',
+                    'remote' => 'secondary',
+                    'onsite' => 'dark',
+                    'open' => 'outline-success',
+                    'in_progress' => 'warning text-white',
+                    'completed' => 'success',
+                    'cancelled' => 'danger',
+                ];
+            @endphp
 
-@foreach ($statuses as $key => $color)
-    @if ($job->$key)
-        <span class="btn btn-{{ $color }}">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
-    @endif
-@endforeach
+            @foreach ($statuses as $key => $color)
+                @if ($job->$key)
+                    <span class="btn btn-{{ $color }}">{{ ucwords(str_replace('_', ' ', $key)) }}</span>
+                @endif
+            @endforeach
             </td>
             <td class="text-right">
                 <div class="dropdown dropdown-action">

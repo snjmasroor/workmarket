@@ -120,8 +120,8 @@
                     <label for="cancelled">Cancelled</label>
                     @endif
                 </div>
-                </div>
             </div>
+        
 
                 <div class="col-md-12">
                     <div class="form-group">

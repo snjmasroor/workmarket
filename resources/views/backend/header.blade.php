@@ -1,8 +1,8 @@
 <div class="header">
 	<div class="header-left">
 		<a href="index-2.html" class="logo">
-			<div>WM</div>
-            <span>workmarket<small style="display:block; font-size:10px;">by ADP</small></span>
+			<div>Splitwire </div>
+            <span>workmarket<small style="display:block; font-size:10px;"></small></span>
 		</a>
 	</div>
 	<a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
