@@ -51,7 +51,7 @@
         <tr>
             <td>{{ $index + 1 }}</td>
             <td>{{ $job->title }}</td>
-            <td>{{ Str::limit($job->description, 50) }}</td>
+            <td>{{ Str::limit(strip_tags(htmlspecialchars_decode($job->description)), 50) }}</td>
             <td>{{ $job->industry->name ?? 'N/A' }}</td>
             <td>${{ number_format($job->budget, 2) }}</td>
             <td>{{ \Carbon\Carbon::parse($job->deadline)->format('d M, Y') }}</td>

@@ -28,7 +28,7 @@ class JobController extends Controller
 
    public function store(Request $request) {
 
-        $request->validate([
+       $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'budget' => 'required|numeric|min:1',
@@ -37,19 +37,13 @@ class JobController extends Controller
             'industry_id' => 'required|exists:industries,id',
             'deadline' => 'required|date_format:d/m/Y|after:today',
             'start_date' => 'required|date_format:d/m/Y|after:today',
-            // 'skill_ids' => 'required|array',
-            // 'skill_ids.*' => 'exists:skills,id',
+            'attachments' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
             'status' => 'nullable|in:1,0',
         ]);
-       
 
         try {
             DB::beginTransaction();
-            if ($request->hasFile('attachments')) {
-                $filename = $request->file('attachments')->store('attachments', 'public');
-                $job->attachments = $filename;
-            }
-             dd($filename);
+
             $job = new Job;
             $job->user_id = auth()->id();
             $job->title = $request->title;
@@ -57,10 +51,8 @@ class JobController extends Controller
             $job->budget = $request->budget;
             $job->state = $request->state;
             $job->city = $request->city;
-            
-            $job->deadline = Carbon::createFromFormat('d/m/Y', $request->start_date)->format('Y-m-d');
+            $job->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date)->format('Y-m-d');
             $job->deadline = Carbon::createFromFormat('d/m/Y', $request->deadline)->format('Y-m-d');
-            
             $job->address = $request->address;
             $job->zip = $request->zip;
             $job->radius = $request->radius;
@@ -72,29 +64,30 @@ class JobController extends Controller
             $job->nda_requirement = htmlspecialchars($request->nda_requirement);
             $job->terms_acceptance = htmlspecialchars($request->terms_acceptance);
             $job->description = htmlspecialchars($request->description);
-        // Flags
+
+            // Add flags
             $job->addFlag($request->jobType === 'fixed' ? Job::FLAG_FIXED : Job::FLAG_HOURLY);
             $job->addFlag($request->jobLocation === 'remote' ? Job::FLAG_REMOTE : Job::FLAG_ONSITE);
             $job->addFlag(Job::FLAG_IN_PROGRESS);
-
             if ($request->status == '1') {
                 $job->addFlag(Job::FLAG_ACTIVE);
             }
 
-            
-
-            // Save job — this MUST happen first
             $job->save();
 
-        if (!$job->exists) {
-            throw new \Exception("Job was not saved to DB.");
-        }
-
-        // Attach skills with flags
-        if ($request->has('skill_ids')) {
-                $job->skills()->sync($request->skill_ids);
-            
+            if ($request->hasFile('attachments')) {
+                $name = rand(99, 9999999);
+                $extension = $request->attachments->getClientOriginalExtension();
+                $fileNameToStore = $name . '.' . $extension;
+                $path = $request->attachments->storeAs("public/jobs/attachments/{$job->id}/", $fileNameToStore);
+                $job->attachments = "jobs/attachments/{$job->id}/{$fileNameToStore}";
+                $job->save();
             }
+
+            if ($request->has('skill_ids')) {
+                $job->skills()->sync($request->skill_ids);
+            }
+
             DB::commit();
             return redirect()->route('show.jobs')->with('success', 'Job created.');
 
