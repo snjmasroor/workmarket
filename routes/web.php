@@ -25,6 +25,7 @@ Route::middleware(['auth', 'user-access:user'])
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/profile', [UserController::class, 'viewProfile'])->name('user.viewProfile');
+    Route::get('/view-jobs', [UserController::class, 'view_jobs'])->name('user.viewJobs');
 });
   
 /*------------------------------------------

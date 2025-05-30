@@ -87,27 +87,41 @@
                             <label>Job Location Type</label>
                             <select class="select form-control" name="jobLocation" required>
                                 <option value="remote" {{ $job->remote == 'remote' ? 'selected' : '' }}>Remote</option>
-                                <option value="on-site" {{ $job->onsite == 'onsite' ? 'selected' : '' }}>On Site</option>
+                                <option value="onsite" {{ $job->onsite == 'onsite' ? 'selected' : '' }}>On Site</option>
                             </select>
                         </div>
                     </div>
-
+                    <div id="state" class="col-md-3 onSiteFields">
+                        <div class="form-group">
+                            <label>State</label>
+                            <input class="form-control" type="text" value="{{ old('state', $job->state) }}" name="state" placeholder="Please Enter State">
+                        </div>
+                    </div>
+                    <div id="city" class="col-md-3 onSiteFields">
+                        <div class="form-group">
+                            <label>City</label>
+                            <input class="form-control" type="text"  value="{{ old('city', $job->city) }}" name="city" placeholder="Please Enter City">
+                        </div>
+                    </div>
+                </div>
+            <div class="row">
                    <div class="col-md-6">
                     @if(auth()->user() && auth()->user()->type === 'superadmin')
-    <input type="radio" id="open" name="status_admin" value="open" {{ $job->open == 'open' ? 'checked' : '' }}>
-    <label for="open">Open</label><br>
+                    <input type="radio" id="open" name="status_admin" value="open" {{ $job->open == 'open' ? 'checked' : '' }}>
+                    <label for="open">Open</label><br>
 
-    <input type="radio" id="in_progress" name="status_admin" value="in_progress" {{ $job->in_progress == 'in_progress' ? 'checked' : '' }}>
-    <label for="in_progress">In Progress</label><br>
+                    <input type="radio" id="in_progress" name="status_admin" value="in_progress" {{ $job->in_progress == 'in_progress' ? 'checked' : '' }}>
+                    <label for="in_progress">In Progress</label><br>
 
-    <input type="radio" id="completed" name="status_admin" value="completed" {{ $job->completed == 'completed' ? 'checked' : '' }}>
-    <label for="completed">Completed</label><br>
+                    <input type="radio" id="completed" name="status_admin" value="completed" {{ $job->completed == 'completed' ? 'checked' : '' }}>
+                    <label for="completed">Completed</label><br>
 
-    <input type="radio" id="cancelled" name="status_admin" value="cancelled" {{ $job->cancelled == 'cancelled' ? 'checked' : '' }}>
-    <label for="cancelled">Cancelled</label>
-    @endif
-</div>
+                    <input type="radio" id="cancelled" name="status_admin" value="cancelled" {{ $job->cancelled == 'cancelled' ? 'checked' : '' }}>
+                    <label for="cancelled">Cancelled</label>
+                    @endif
                 </div>
+                </div>
+            </div>
 
                 <div class="col-md-12">
                     <div class="form-group">
@@ -169,4 +183,25 @@
     });
   });
 </script>
+<script>
+        $(document).ready(function() {
+            // Function to show/hide and manage required attributes
+            function toggleOnSiteFields() {
+                
+                if ($('#jobLocation').val() === 'onsite') {
+                    $('#state').removeClass('onSiteFields');
+                    $('#city').removeClass('onSiteFields');
+                } else {
+                    $('#state').addClass('onSiteFields');
+                    $('#city').addClass('onSiteFields'); // Clear and unrequire
+                }
+            }
+
+            // Call on page load
+            toggleOnSiteFields();
+
+            // Call on change
+            $('#jobLocation').change(toggleOnSiteFields);
+        });
+    </script>
 @endpush

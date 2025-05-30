@@ -11,11 +11,13 @@
 
 <!-- Google Material Icons -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- CSS Files -->
 <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/font-awesome.min.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
 @stack('styles')
     <!--[if lt IE 9]>
 		<script src="assets/js/html5shiv.min.js"></script>

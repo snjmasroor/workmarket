@@ -97,4 +97,8 @@ class UserController extends Controller
 
        return redirect()->route('home');//return redirect()->back()->with('success', 'Registration successful!');
     }
+
+    public function view_jobs (Request $request) {
+        return view('user.view-jobs');
+    }
 }

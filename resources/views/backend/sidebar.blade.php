@@ -57,7 +57,7 @@
                             <a href="calendar.html"><i class="fa fa-briefcase"></i> <span>My Work</span></a>
                         </li>
                         <li>
-                            <a href="calendar.html"><i class="fa fa-wrench"></i> <span>Find Work</span></a>
+                            <a href="{{route('user.viewJobs')}}"><i class="fa fa-wrench"></i> <span>Find Work</span></a>
                         </li>
                         <li>
                             <a href="calendar.html"><i class="fa fa-calendar"></i> <span>Calendar</span></a>

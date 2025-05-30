@@ -111,12 +111,12 @@ a:focus {
 	border-radius: 0;
 	box-shadow: none;
 	padding: 0.469rem 0.75rem;
-	border-color: #eaeaea;
+	border-color: #a1a1a1;
 	font-size: 14px;
 	min-height: 40px;
 }
 .form-control:focus {
-	border-color: #f7941d;
+	border-color: #f1a84f;
 	box-shadow: none;
 	outline: 0 none;
 }

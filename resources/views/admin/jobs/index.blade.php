@@ -108,6 +108,18 @@
             </div>
           </div>
         </div>
+          @if (session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: '{{ session('success') }}',
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
       </div> @endsection @push('scripts') <script src="{{ asset('assets/js/jquery.dataTables.min.js') }}"></script>
       <script src="{{ asset('assets/js/dataTables.bootstrap4.min.js') }}"></script>
+    
        @endpush
