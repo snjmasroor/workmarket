@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('license')->nullable(); // Required license (if any)
             $table->string('attachments')->nullable(); // Required license (if any)
             $table->string('language')->nullable(); // Language proficiency (optional)
+            $table->text('description')->nullable(); // Language proficiency (optional)
             $table->bigInteger('flags')->default(0); // Security requirement
             $table->timestamps();
 

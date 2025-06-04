@@ -217,7 +217,7 @@
                                             </div>
                                             <div class="modal-body p-4"> {{-- Added padding --}}
                                                 <p class="text-muted mb-4">Groups are where your team communicates. They’re best when organized around a topic — #leads, for example.</p>
-                                                <form id="jobQualificationForm" action="" method="POST">
+                                                <form id="jobQualificationForm" action="{{ route('job.store') }}" method="POST" enctype="multipart/form-data">
                                                     @csrf
 
                                                     <div class="form-group mb-3">
@@ -243,11 +243,11 @@
                                                         <input type="text" class="form-control form-control-lg" id="license" name="license" placeholder="e.g., PMP, CPA">
                                                     </div>
 
-                                                    <div class="form-group mb-3">
+                                                    {{-- <div class="form-group mb-3">
                                                         <label for="attachments" class="form-label">Attachments</label>
-                                                        <input type="file" class="form-control-file" id="attachments" name="attachments"> {{-- Standard file input --}}
+                                                        <input type="file" class="form-control-file" id="attachments" name="attachments"> 
                                                         <small class="form-text text-muted">Max file size 5MB. Allowed types: PDF, DOC, DOCX.</small>
-                                                    </div>
+                                                    </div> --}}
 
                                                     <div class="form-group mb-3">
                                                         <label for="language" class="form-label">Language</label>

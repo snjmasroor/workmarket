@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Industry;
 use App\Models\Skill;
 use App\Models\IndustrySkill;
+use App\Models\JobQualification;
 use App\Models\Job;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -24,7 +25,7 @@ class JobController extends Controller
     public function create() {
         $industries = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->get();
         $skills = Skill::whereRaw('`flags` & ? = ?', [Skill::FLAG_ACTIVE, Skill::FLAG_ACTIVE])->get();
-        return view('admin.jobs.test', compact('industries', 'skills'));
+        return view('admin.jobs.create', compact('industries', 'skills'));
     }
 
    public function store(Request $request) {
@@ -39,7 +40,7 @@ class JobController extends Controller
     //         'industry_id' => 'required|exists:industries,id',
     //         'deadline' => 'required|date_format:d/m/Y|after:today',
     //         'start_date' => 'required|date_format:d/m/Y|after:today',
-    //         'attachments' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
+    //         // 'attachments' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
     //         'status' => 'nullable|in:1,0',
     //     ]);
 
@@ -94,6 +95,24 @@ class JobController extends Controller
             // }
 
             // $job->save();
+
+            $qualification = new JobQualification;
+
+            $validatedData = $request->validate([
+                'education_level' => 'required|string|max:255',
+                'min_years_experience' => 'nullable|integer|min:0',
+                'license' => 'nullable|string|max:255',
+                'language' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
+                // 'attachments' => 'nullable|file|mimes:pdf,doc,docx|max:5120', // Uncomment if you re-enable attachments
+            ]);
+            $qualification->education_level = $request->education_level;
+            $qualification->min_years_experience = $request->min_years_experience;
+            $qualification->license = $request->license;
+            $qualification->language = $request->language;
+            $qualification->description = $request->description;
+            // $qualification->job_id = $job->id;
+             $qualification->save();
 
             // if ($request->hasFile('attachments')) {
             //     $name = rand(99, 9999999);
