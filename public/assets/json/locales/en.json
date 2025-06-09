@@ -3,14 +3,33 @@
   "Dashboard": "Dashboard",
   "eCommerce": "eCommerce",
   "CRM": "CRM",
-  "Layouts": "Layouts",
+  "User": "Users",
+  "Show User" : "Users",
+  "User Industry": "User Industry",
+  "User Skill": "User Skill",
+
   "Collapsed menu": "Collapsed menu",
   "Content navbar": "Content navbar",
   "Content nav + Sidebar": "Content nav + Sidebar",
   "Horizontal": "Horizontal",
   "Vertical": "Vertical",
-  "Without menu": "Without menu",
-  "Without navbar": "Without navbar",
+  "Add User": "Add Users",
+  "Show Vandor": "Vandors",
+  "Industry" : "Industry & Skills", 
+  "Show Industry" : "Industry", 
+  "Skill" : "Skills", 
+  "Industry Skill" : "Industry Skill", 
+  
+  "Job" : "Jobs", 
+
+  "Insight": "Insights",
+  "Recruitment": "Recruitments",
+  "Work Order Report": "Work Order Report",
+  "Additional Charge Report": "Additional Charge Report",
+  "Work": "Work",
+  
+
+
   "Fluid": "Fluid",
   "Container": "Container",
   "Blank": "Blank",

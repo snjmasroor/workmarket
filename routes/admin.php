@@ -6,10 +6,26 @@ use App\Http\Controllers\SkillController;
 use App\Http\Controllers\IndustrySkillController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobSpacification;
+use App\Http\Controllers\UserController;
 
 
   Route::middleware(['auth', 'user-access:admin,superadmin'])->prefix('admin')->group(function () {
         Route::get('/industries', [IndusrtyController::class, 'index'])->name('show.industry');
+        Route::get('/industries/data', [IndusrtyController::class, 'data'])->name('admin.industries.data');
+        Route::get('/industries/create', [IndusrtyController::class, 'create'])->name('admin.industry.create');
+        Route::post('/industries/store', [IndusrtyController::class, 'store'])->name('admin.industry.store'); 
+        Route::get('/industries/{id}/edit', [IndusrtyController::class, 'edit'])->name('admin.industries.edit');
+        Route::put('/industry/update/{id}', [IndusrtyController::class, 'update'])->name('admin.industry.update');
+        Route::delete('/industries/{id}', [IndusrtyController::class, 'destroy'])->name('admin.industries.destroy');
+
+        //users
+        Route::get('/user/users', [UserController::class, 'index'])->name('admin.user.index');
+        Route::get('/user/users/data', [UserController::class, 'data'])->name('admin.user.index.data');
+        Route::get('/users/create', [UserController::class, 'create'])->name('admin.user.create');
+        Route::post('/users/store', [UserController::class, 'store'])->name('admin.user.store');
+        Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('admin.user.edit');
+        Route::put('/users/update/{id}', [UserController::class, 'update'])->name('admin.user.update');
+
         Route::get('/skills', [SkillController::class, 'index'])->name('show.skills');
 
         // adding industry skills

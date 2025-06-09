@@ -9,8 +9,45 @@ use Hash;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Yajra\DataTables\DataTables;
+
 class UserController extends Controller
 {
+    
+    public function index() {
+        return view('admin.users.user-index');
+    }
+
+    public function data(Request $request)
+    {
+        $query = User::where('type', '!=', 1);
+        return DataTables::of($query)
+         ->addColumn('firstname', fn($row) => $row->firstname ?: '-')
+         ->addColumn('lastname', fn($row) => $row->lastname ?: '-')
+         ->addColumn('username', fn($row) => $row->username ?: '-')
+            ->addColumn('flags', function ($row) {
+                if ($row->active === true || $row->active == 1) {
+                    return '<span class="badge bg-label-success me-1">Active</span>';
+                } elseif ($row->active === false || $row->active == 0) {
+                    return '<span class="badge bg-label-warning me-1">Inactive</span>';
+                } else {
+                    return '<span class="badge bg-secondary">None</span>';
+                }
+            })
+            ->addColumn('action', function ($row) {
+                $editUrl = route('admin.industries.edit', $row->id);
+                $deleteUrl = route('admin.industries.destroy', $row->id);
+                $detailUrl = route('admin.industries.destroy', $row->id);
+
+                return '
+                    <a href="'.$editUrl.'" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="'.$detailUrl.'" class="btn btn-sm btn-success">Detail</a>
+                ';
+            })
+            ->rawColumns(['flags', 'action']) // allow HTML rendering
+            ->make(true);
+    }
+    
     
     public function viewProfile(){
         $user = User::with('industry')->where('id', auth()->id())->first();

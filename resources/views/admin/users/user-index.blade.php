@@ -29,9 +29,12 @@
       <thead class="table-dark">
         <tr>
           <th>Id</th>
-          <th>Name</th>
+          <th>Firstname</th>
+          <th>Lastname</th>
+          <th>Username</th>
+          <th>Email</th>
           <th>Status</th>
-          <th>Active</th>
+          <th>Action</th>
         </tr>
       </thead>
     </table>
@@ -67,14 +70,17 @@ $('.dt-responsive').DataTable().clear().destroy();
   $('.dt-responsive').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '{{ route("admin.industries.data") }}',
+    ajax: '{{ route("admin.user.index.data") }}',
     columns: [
-    { data: 'id', name: 'id' },
-    { data: 'name', name: 'name' },
-    { data: 'flags', name: 'flags' },
-    { data: 'action', name: 'action', orderable: false, searchable: false }
+        { data: 'id', name: 'id' },
+        { data: 'firstname', name: 'firstname' },
+        { data: 'lastname', name: 'lastname' },
+        { data: 'username', name: 'username' },
+        { data: 'email', name: 'email' },
+        { data: 'status', name: 'status', orderable: false, searchable: false },
+        { data: 'action', name: 'action', orderable: false, searchable: false },
    
-  ]
+    ]
   });
 });
 
