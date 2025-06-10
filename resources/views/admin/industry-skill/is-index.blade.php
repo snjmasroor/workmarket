@@ -13,29 +13,55 @@
 
 <div class="card">
   <div class="card-header sticky-element bg-label-secondary d-flex justify-content-sm-between align-items-sm-center flex-column flex-sm-row">
-    <h5 class="card-title mb-sm-0 me-2">Industries</h5>
+    <h5 class="card-title mb-sm-0 me-2">Industry Skills</h5>
     <div class="action-btns">
       <button class="btn btn-label-primary me-4">
         <span class="align-middle"> Back</span>
       </button>
-      <a href="{{route('admin.industry.create')}}" class="btn btn-primary">Add Industry</a>
+      <a href="{{route('industry-skill.create')}}" class="btn btn-primary">Add Industry Skill</a>
     </div>
   </div>
 </div>
 <div class="card">
-  <h5 class="card-header">All Industries</h5>
+  <h5 class="card-header">All Skills</h5>
   <div class="card-datatable table-responsive">
     <table class="dt-responsive table">
       <thead class="table-dark">
         <tr>
           <th>Id</th>
-          <th>Firstname</th>
-          <th>Lastname</th>
-          <th>Username</th>
-          <th>Email</th>
+          <th>Industry Name</th>
+          <th>Skills Name</th>
           <th>Status</th>
-          <th>Action</th>
+          <th>Active</th>
         </tr>
+        <tbody>
+             @php $counter = 1; @endphp
+            @forelse ($industry_skills as $industry)
+            <tr role="row">
+                <td>{{ $counter++ }}</td>
+                 <td>{{ $industry->name }}</td>
+                    <td>
+                        @if($industry->skills->count())
+                            {{ $industry->skills->pluck('name')->implode(', ') }}
+                        @else
+                            <em>No Skills Assigned</em>
+                        @endif
+                    </td>
+                    <td>
+                        <span class="badge  {{ $industry->active ? 'bg-label-success me-1' : 'bg-label-warning me-1' }}">
+                            {{ $industry->active ? 'Active' : 'Deactive' }}
+                        </span>
+                    </td>
+                    <td>
+                         <a href="{{route('industry-skill.edit', $industry->id)}}" class="btn btn-sm btn-primary">Edit</a>
+                    </td>
+            </tr>
+             @empty
+            <tr>
+                <td colspan="5" class="text-center">No Data in Database</td>
+            </tr>
+        @endforelse
+        </tbody>
       </thead>
     </table>
   </div>
@@ -64,26 +90,6 @@
 
 
 <script>
-$(document).ready(function () {
-$('.dt-responsive').DataTable().clear().destroy();
-
-  $('.dt-responsive').DataTable({
-    processing: true,
-    serverSide: true,
-    ajax: '{{ route("admin.user.index.data") }}',
-    columns: [
-        { data: 'id', name: 'id' },
-        { data: 'firstname', name: 'firstname' },
-        { data: 'lastname', name: 'lastname' },
-        { data: 'username', name: 'username' },
-        { data: 'email', name: 'email' },
-        { data: 'flags', name: 'flags', orderable: false, searchable: false },
-        { data: 'action', name: 'action', orderable: false, searchable: false },
-   
-    ]
-  });
-});
-
 
 $('.dt-responsive').DataTable({
   dom: 'Bfrtip',

@@ -1,4 +1,4 @@
- @extends('layouts.backend.master') 
+@extends('layouts.backend.master') 
 @push('styles')
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/spinkit/spinkit.css')}}" />
     <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}" />
@@ -14,7 +14,7 @@
             <div class="col-md-6">
                 <div class="card card-action mb-6">
                     <div class="card-header">
-                        <h5 class="card-action-title mb-0">Add Industry Skills</h5>
+                        <h5 class="card-action-title mb-0">Edit Industry Skills</h5>
                         <div class="card-action-element">
                             <ul class="list-inline mb-0">
                                 <li class="list-inline-item">
@@ -28,22 +28,27 @@
 
                     <div class="card-body">
                         <!-- Removed redundant d-flex align-items-center around the form -->
-                        <form action="{{route('industry-skill.store')}}" method="post">
+                        <form action="{{route('industry-skill.update', $selectedIndustryId)}}" method="post">
                              @csrf  
+                            @method('PUT')
                             <div class="mb-3">
-                                <label for="select2Basic" class="form-label">Basic</label>
-                                <select id="select2Basic" name="industry_id" class="select2 form-select form-select-lg"   data-allow-clear="true">
-                                     <option value="">-- Select Industry --</option>
-                                        @foreach($industries as $industry)
-                                                <option value="{{ $industry->id }}">{{ $industry->name }}</option>
-                                        @endforeach
+                                <label for="select2Basic" class="form-label">Industry</label>
+                                <select id="select2Basic" name="industry_id" class="select2 form-select form-select-lg" disabled data-allow-clear="true">
+                                    <option value="">-- Choose Industry --</option>
+                                    @foreach ($industries as $industry)
+                                        <option value="{{ $industry->id }}" {{ $selectedIndustryId == $industry->id ? 'selected' : '' }}>
+                                            {{ $industry->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                             <div class="mb-3">
+                                 <label for="select2Basic" class="form-label">Skills</label>
                                     <select multiple name="skill_ids[]" id="select2Basic2" class="select2 form-select form-select-lg"   data-allow-clear="true">
-                                   <option value="">-- Select Skill --</option>
-                                    @foreach($skills as $skill)
-                                        <option value="{{ $skill->id }}">{{ $skill->name }}</option>
+                                    @foreach ($allSkills as $skill)
+                                        <option value="{{ $skill->id }}" {{ in_array($skill->id, $selectedSkills) ? 'selected' : '' }}>
+                                            {{ $skill->name }}
+                                        </option>
                                     @endforeach
                                     </select>
                             </div>

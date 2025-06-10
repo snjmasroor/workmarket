@@ -25,7 +25,7 @@ class JobController extends Controller
     public function create() {
         $industries = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->get();
         $skills = Skill::whereRaw('`flags` & ? = ?', [Skill::FLAG_ACTIVE, Skill::FLAG_ACTIVE])->get();
-        return view('admin.jobs.create', compact('industries', 'skills'));
+        return view('admin.jobs.job-create', compact('industries', 'skills'));
     }
 
    public function store(Request $request) {

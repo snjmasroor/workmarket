@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Concerns\Flagable;
 class Address extends Model
 {
-    use SoftDeletes, Flagable;
+    use Flagable;
     protected $appends = ['active'];
      public const FLAG_ACTIVE = 1;
     // protected $table = 'addresses';

@@ -35,9 +35,9 @@ class UserController extends Controller
                 }
             })
             ->addColumn('action', function ($row) {
-                $editUrl = route('admin.industries.edit', $row->id);
+                $editUrl = route('admin.user.edit', $row->id);
                 $deleteUrl = route('admin.industries.destroy', $row->id);
-                $detailUrl = route('admin.industries.destroy', $row->id);
+                $detailUrl = route('admin.user.detail', $row->id);
 
                 return '
                     <a href="'.$editUrl.'" class="btn btn-sm btn-primary">Edit</a>
@@ -46,6 +46,13 @@ class UserController extends Controller
             })
             ->rawColumns(['flags', 'action']) // allow HTML rendering
             ->make(true);
+    }
+
+    public function detail(Request $request, $id)
+    {
+      // return $id;
+        $user = User::with(['industry', 'skills', 'latestAddress'])->where('id', $id)->first();
+        return view('admin.users.profile', compact('user'));
     }
     
     

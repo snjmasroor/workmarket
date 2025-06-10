@@ -25,14 +25,25 @@ use App\Http\Controllers\UserController;
         Route::post('/users/store', [UserController::class, 'store'])->name('admin.user.store');
         Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('admin.user.edit');
         Route::put('/users/update/{id}', [UserController::class, 'update'])->name('admin.user.update');
+        Route::get('/users/{id}/detail', [UserController::class, 'detail'])->name('admin.user.detail');
+
 
         Route::get('/skills', [SkillController::class, 'index'])->name('show.skills');
+        Route::get('/skills/data', [SkillController::class, 'data'])->name('admin.skills.data');
+        Route::get('/skills/create', [SkillController::class, 'create'])->name('admin.skill.create');
+        Route::post('/skills/store', [SkillController::class, 'store'])->name('admin.skill.store');
+        Route::get('/skills/{id}/edit', [SkillController::class, 'edit'])->name('admin.skill.edit');
+        Route::put('/skills/update/{id}', [SkillController::class, 'update'])->name('admin.skill.update');
+        
 
         // adding industry skills
         Route::get('/industry-skills', [IndustrySkillController::class, 'index'])->name('show.industry-skills');
+        Route::get('/industry-skills/data', [IndustrySkillController::class, 'data'])->name('admin.industry.skills.data');
         Route::get('/industry-skill/create', [IndustrySkillController::class, 'create'])->name('industry-skill.create');
         Route::post('/industry-skill/store', [IndustrySkillController::class, 'store'])->name('industry-skill.store');
-        
+        Route::get('/industry-skill/{id}/edit', [IndustrySkillController::class, 'edit'])->name('industry-skill.edit');
+        Route::put('/industry-skill/update/{id}', [IndustrySkillController::class, 'update'])->name('industry-skill.update');
+        Route::get('/api/skills', [IndustrySkillController::class, 'getSkills'])->name('industry-skill.api');
         // Adding jobs
         Route::get('/jobs/create', [JobController::class, 'create'])->name('jobs.create');
         Route::get('/jobs', [JobController::class, 'index'])->name('show.jobs');

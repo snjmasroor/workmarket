@@ -18,87 +18,33 @@
   // Custom list & inline suggestion
   //------------------------------------------------------
   const TagifyCustomInlineSuggestionEl = document.querySelector('#TagifyCustomInlineSuggestion');
-  const TagifyCustomListSuggestionEl = document.querySelector('#TagifyCustomListSuggestion');
+ const TagifyCustomListSuggestionEl = document.querySelector('#TagifyCustomListSuggestion');
 
-  const whitelist = [
-    'A# .NET',
-    'A# (Axiom)',
-    'A-0 System',
-    'A+',
-    'A++',
-    'ABAP',
-    'ABC',
-    'ABC ALGOL',
-    'ABSET',
-    'ABSYS',
-    'ACC',
-    'Accent',
-    'Ace DASL',
-    'ACL2',
-    'Avicsoft',
-    'ACT-III',
-    'Action!',
-    'ActionScript',
-    'Ada',
-    'Adenine',
-    'Agda',
-    'Agilent VEE',
-    'Agora',
-    'AIMMS',
-    'Alef',
-    'ALF',
-    'ALGOL 58',
-    'ALGOL 60',
-    'ALGOL 68',
-    'ALGOL W',
-    'Alice',
-    'Alma-0',
-    'AmbientTalk',
-    'Amiga E',
-    'AMOS',
-    'AMPL',
-    'Apex (Salesforce.com)',
-    'APL',
-    'AppleScript',
-    'Arc',
-    'ARexx',
-    'Argus',
-    'AspectJ',
-    'Assembly language',
-    'ATS',
-    'Ateji PX',
-    'AutoHotkey',
-    'Autocoder',
-    'AutoIt',
-    'AutoLISP / Visual LISP',
-    'Averest',
-    'AWK',
-    'Axum',
-    'Active Server Pages',
-    'ASP.NET'
-  ];
-  // Inline
-  let TagifyCustomInlineSuggestion = new Tagify(TagifyCustomInlineSuggestionEl, {
-    whitelist: whitelist,
-    maxTags: 10,
-    dropdown: {
-      maxItems: 20,
-      classname: 'tags-inline',
-      enabled: 0,
-      closeOnSelect: false
-    }
-  });
-  // List
-  let TagifyCustomListSuggestion = new Tagify(TagifyCustomListSuggestionEl, {
-    whitelist: whitelist,
-    maxTags: 10,
-    dropdown: {
-      maxItems: 20,
-      classname: '',
-      enabled: 0,
-      closeOnSelect: false
-    }
-  });
+  fetch('/admin/api/skills')
+    .then(res => res.json())
+    .then(data => {
+      // Map skills to the format Tagify expects: value + custom properties (like id)
+      const skillOptions = data.map(skill => ({
+        value: skill.name,
+        id: skill.id
+      }));
+
+      new Tagify(TagifyCustomListSuggestionEl, {
+        whitelist: skillOptions,
+        enforceWhitelist: true,
+        dropdown: {
+          maxItems: 500,
+          enabled: 0,
+          closeOnSelect: false
+        }
+      });
+
+      // OPTIONAL: Listen for tag selection and see the ID
+      TagifyCustomListSuggestionEl.addEventListener('change', (e) => {
+        const selected = e.detail.tagify.value; // array of selected tags
+        console.log('Selected:', selected); // each item has .value and .id
+      });
+    });
 
   // Users List suggestion
   //------------------------------------------------------

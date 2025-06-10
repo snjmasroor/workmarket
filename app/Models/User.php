@@ -83,7 +83,19 @@ class User extends Authenticatable
     }
     public function getUserImageUrlAttribute ()
     {
-        return base_path().'/public/storage/users/'.$this->user_id.'/'.$this->image;
+        return asset('storage/users/' . $this->image);
+    }
+     public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    /**
+     * Get the latest address for the User.
+     */
+    public function latestAddress()
+    {
+        return $this->hasOne(Address::class)->latestOfMany();
     }
 
 }

@@ -13,28 +13,25 @@
 
 <div class="card">
   <div class="card-header sticky-element bg-label-secondary d-flex justify-content-sm-between align-items-sm-center flex-column flex-sm-row">
-    <h5 class="card-title mb-sm-0 me-2">Industries</h5>
+    <h5 class="card-title mb-sm-0 me-2">Skills</h5>
     <div class="action-btns">
       <button class="btn btn-label-primary me-4">
         <span class="align-middle"> Back</span>
       </button>
-      <a href="{{route('admin.industry.create')}}" class="btn btn-primary">Add Industry</a>
+      <a href="{{route('admin.skill.create')}}" class="btn btn-primary">Add Skill</a>
     </div>
   </div>
 </div>
 <div class="card">
-  <h5 class="card-header">All Industries</h5>
+  <h5 class="card-header">All Skills</h5>
   <div class="card-datatable table-responsive">
     <table class="dt-responsive table">
       <thead class="table-dark">
         <tr>
           <th>Id</th>
-          <th>Firstname</th>
-          <th>Lastname</th>
-          <th>Username</th>
-          <th>Email</th>
+          <th>Name</th>
           <th>Status</th>
-          <th>Action</th>
+          <th>Active</th>
         </tr>
       </thead>
     </table>
@@ -70,17 +67,14 @@ $('.dt-responsive').DataTable().clear().destroy();
   $('.dt-responsive').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '{{ route("admin.user.index.data") }}',
+    ajax: '{{ route("admin.skills.data") }}',
     columns: [
-        { data: 'id', name: 'id' },
-        { data: 'firstname', name: 'firstname' },
-        { data: 'lastname', name: 'lastname' },
-        { data: 'username', name: 'username' },
-        { data: 'email', name: 'email' },
-        { data: 'flags', name: 'flags', orderable: false, searchable: false },
-        { data: 'action', name: 'action', orderable: false, searchable: false },
+    { data: 'id', name: 'id' },
+    { data: 'name', name: 'name' },
+    { data: 'flags', name: 'flags' },
+    { data: 'action', name: 'action', orderable: false, searchable: false }
    
-    ]
+  ]
   });
 });
 
