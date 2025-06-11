@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Address;
+use App\Models\State;
 use Hash;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
@@ -144,5 +145,10 @@ class UserController extends Controller
 
     public function view_jobs (Request $request) {
         return view('user.view-jobs');
+    }
+
+    public function getState($countryCode) {
+       $states = State::where('country_id', $countryCode)->get();
+       return response()->json($states);
     }
 }

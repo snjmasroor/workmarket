@@ -8,8 +8,10 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Industry;
+use App\Models\Country;
+use App\Models\State;
 use App\Models\Skill;
-
+// use Rinvex\Country\CountryLoader;
 class RegisterController extends Controller
 {
     /*
@@ -75,7 +77,11 @@ class RegisterController extends Controller
  
     public function showRegistrationForm()
     {
-        $industry_skills = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->with('skills')->get();
-        return view('auth.register', compact('industry_skills'));
+       $industry_skills = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->with('skills')->get();
+       $countries = Country::get();
+       return view('auth.register', compact('countries','industry_skills'));
+    }
+    public function getState() {
+        echo "asdasd";
     }
 }
