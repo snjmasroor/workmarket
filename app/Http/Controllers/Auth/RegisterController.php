@@ -81,7 +81,5 @@ class RegisterController extends Controller
        $countries = Country::get();
        return view('auth.register', compact('countries','industry_skills'));
     }
-    public function getState() {
-        echo "asdasd";
-    }
+    
 }

@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
       // Account details
       const multiSteps1 = FormValidation.formValidation(stepsValidationFormStep1, {
         fields: {
-          multiStepsUsername: {
+          username: {
             validators: {
               notEmpty: {
                 message: 'Please enter username'
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function (e) {
               }
             }
           },
-          multiStepsEmail: {
+          email: {
             validators: {
               notEmpty: {
                 message: 'Please enter email address'
@@ -124,21 +124,21 @@ document.addEventListener('DOMContentLoaded', function (e) {
               }
             }
           },
-          multiStepsPass: {
+          password: {
             validators: {
               notEmpty: {
                 message: 'Please enter password'
               }
             }
           },
-          multiStepsConfirmPass: {
+          password_confirmation: {
             validators: {
               notEmpty: {
                 message: 'Confirm Password is required'
               },
               identical: {
                 compare: function () {
-                  return stepsValidationFormStep1.querySelector('[name="multiStepsPass"]').value;
+                  return stepsValidationFormStep1.querySelector('[name="password"]').value;
                 },
                 message: 'The password and its confirm are not the same'
               }
@@ -171,14 +171,14 @@ document.addEventListener('DOMContentLoaded', function (e) {
       // Personal info
       const multiSteps2 = FormValidation.formValidation(stepsValidationFormStep2, {
         fields: {
-          multiStepsFirstName: {
+          firstname: {
             validators: {
               notEmpty: {
                 message: 'Please enter first name'
               }
             }
           },
-          multiStepsAddress: {
+          address: {
             validators: {
               notEmpty: {
                 message: 'Please enter your address'

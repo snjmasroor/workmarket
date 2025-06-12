@@ -97,5 +97,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(Address::class)->latestOfMany();
     }
+    public function educations()
+    {
+        return $this->hasMany(UserEducation::class);
+    }
 
 }

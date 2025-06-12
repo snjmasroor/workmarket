@@ -1,391 +1,434 @@
 
 @extends('layouts.backend.master') 
 @push('styles')
-<link rel="stylesheet" href="{{asset('assets/vendor/libs/spinkit/spinkit.css')}}" />
-    <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}" />
-    <link rel="stylesheet" href="{{asset('assets/vendor/libs/tagify/tagify.css')}}" />
-    <link rel="stylesheet" href="{{asset('assets/vendor/libs/bootstrap-select/bootstrap-select.css')}}" />
-    <link rel="stylesheet" href="{{asset('assets/vendor/libs/typeahead-js/typeahead.css')}}" />
+<link rel="stylesheet" href="{{ asset('assets/vendor/libs/bs-stepper/bs-stepper.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-select/bootstrap-select.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/dropzone/dropzone.css') }}" />
+
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/@form-validation/form-validation.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}" />
+    <!-- Page CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}" />
+    <link rel="stylesheet" href="{{asset('assets/vendor/libs/animate-css/animate.css')}}" />
+    <link rel="stylesheet" href="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.css')}}" />
 @endpush 
 @section('page-content') 
 
-
-<div class="container py-5">
-<div class="row justify-content-center">
-                <div class="col">
-                  <h6 class="mt-6">Form with Tabs</h6>
-                  <div class="card mb-6">
-                    <div class="card-header px-0 pt-0">
-                      <div class="nav-align-top">
-                        <ul class="nav nav-tabs" role="tablist">
-                          <li class="nav-item">
-                            <button
-                              type="button"
-                              class="nav-link active"
-                              data-bs-toggle="tab"
-                              data-bs-target="#form-tabs-personal"
-                              aria-controls="form-tabs-personal"
-                              role="tab"
-                              aria-selected="true">
-                              <span class="ti ti-user ti-lg d-sm-none"></span
-                              ><span class="d-none d-sm-block">Personal Info</span>
-                            </button>
-                          </li>
-                          <li class="nav-item">
-                            <button
-                              type="button"
-                              class="nav-link"
-                              data-bs-toggle="tab"
-                              data-bs-target="#form-tabs-account"
-                              aria-controls="form-tabs-account"
-                              role="tab"
-                              aria-selected="false">
-                              <span class="ti ti-user-cog ti-lg d-sm-none"></span
-                              ><span class="d-none d-sm-block">Account Details</span>
-                            </button>
-                          </li>
-                          <li class="nav-item">
-                            <button
-                              type="button"
-                              class="nav-link"
-                              data-bs-toggle="tab"
-                              data-bs-target="#form-tabs-social"
-                              aria-controls="form-tabs-social"
-                              role="tab"
-                              aria-selected="false">
-                              <span class="ti ti-link ti-lg d-sm-none"></span
-                              ><span class="d-none d-sm-block">Social Links</span>
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
+<div class="d-flex col-lg-12 align-items-center justify-content-center authentication-bg">
+          <div class="w-px-700">
+            <div id="multiStepsValidation" class="bs-stepper border-none shadow-none mt-5">
+              <div class="bs-stepper-header border-none pt-12 px-0">
+                <div class="step" data-target="#accountDetailsValidation">
+                  <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle"><i class="ti ti-file-analytics ti-md"></i></span>
+                    <span class="bs-stepper-label">
+                      <span class="bs-stepper-title">Account</span>
+                      <span class="bs-stepper-subtitle">Account Details</span>
+                    </span>
+                  </button>
+                </div>
+                <div class="line">
+                  <i class="ti ti-chevron-right"></i>
+                </div>
+                <div class="step" data-target="#personalInfoValidation">
+                  <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle"><i class="ti ti-user ti-md"></i></span>
+                    <span class="bs-stepper-label">
+                      <span class="bs-stepper-title">Personal</span>
+                      <span class="bs-stepper-subtitle">Enter Information</span>
+                    </span>
+                  </button>
+                </div>
+                <div class="line">
+                  <i class="ti ti-chevron-right"></i>
+                </div>
+                <div class="step" data-target="#billingLinksValidation">
+                  <button type="button" class="step-trigger">
+                    <span class="bs-stepper-circle"><i class="ti ti-credit-card ti-md"></i></span>
+                    <span class="bs-stepper-label">
+                      <span class="bs-stepper-title">Billing</span>
+                      <span class="bs-stepper-subtitle">Payment Details</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <div class="bs-stepper-content px-0">
+                <form id="multiStepsForm" onSubmit="return false">
+                  <!-- Account Details -->
+                  <div id="accountDetailsValidation" class="content">
+                    <div class="content-header mb-6">
+                      <h4 class="mb-0">Account Information</h4>
+                      <p class="mb-0">Enter Your Account Details</p>
                     </div>
-
-                    <div class="card-body">
-                      <div class="tab-content p-0">
-                        <!-- Personal Info -->
-                        <div class="tab-pane fade active show" id="form-tabs-personal" role="tabpanel">
-                          <form>
-                            <div class="row g-6">
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-first-name"
-                                    >First Name</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-first-name"
-                                      class="form-control"
-                                      placeholder="John" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-last-name"
-                                    >Last Name</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input type="text" id="formtabs-last-name" class="form-control" placeholder="Doe" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-country"
-                                    >Country</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <select id="formtabs-country" class="select2 form-select" data-allow-clear="true">
-                                      <option value="">Select</option>
-                                      <option value="Australia">Australia</option>
-                                      <option value="Bangladesh">Bangladesh</option>
-                                      <option value="Belarus">Belarus</option>
-                                      <option value="Brazil">Brazil</option>
-                                      <option value="Canada">Canada</option>
-                                      <option value="China">China</option>
-                                      <option value="France">France</option>
-                                      <option value="Germany">Germany</option>
-                                      <option value="India">India</option>
-                                      <option value="Indonesia">Indonesia</option>
-                                      <option value="Israel">Israel</option>
-                                      <option value="Italy">Italy</option>
-                                      <option value="Japan">Japan</option>
-                                      <option value="Korea">Korea, Republic of</option>
-                                      <option value="Mexico">Mexico</option>
-                                      <option value="Philippines">Philippines</option>
-                                      <option value="Russia">Russian Federation</option>
-                                      <option value="South Africa">South Africa</option>
-                                      <option value="Thailand">Thailand</option>
-                                      <option value="Turkey">Turkey</option>
-                                      <option value="Ukraine">Ukraine</option>
-                                      <option value="United Arab Emirates">United Arab Emirates</option>
-                                      <option value="United Kingdom">United Kingdom</option>
-                                      <option value="United States">United States</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6 select2-primary">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-language"
-                                    >Language</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <select id="formtabs-language" class="select2 form-select" multiple>
-                                      <option value="en" selected>English</option>
-                                      <option value="fr" selected>French</option>
-                                      <option value="de">German</option>
-                                      <option value="pt">Portuguese</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-birthdate"
-                                    >Birth Date</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-birthdate"
-                                      class="form-control dob-picker"
-                                      placeholder="YYYY-MM-DD" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-phone"
-                                    >Phone No</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-phone"
-                                      class="form-control phone-mask"
-                                      placeholder="658 799 8941"
-                                      aria-label="658 799 8941" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row mt-6">
-                              <div class="col-md-6">
-                                <div class="row justify-content-end">
-                                  <div class="col-sm-9">
-                                    <button type="submit" class="btn btn-primary me-4">Submit</button>
-                                    <button type="reset" class="btn btn-label-secondary">Cancel</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </form>
+                    <div class="row g-6">
+                      <div class="col-sm-6">
+                        <label class="form-label" for="multiStepsUsername">Username</label>
+                        <input
+                          type="text"
+                          name="multiStepsUsername"
+                          id="multiStepsUsername"
+                          class="form-control"
+                          placeholder="johndoe" />
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label" for="multiStepsEmail">Email</label>
+                        <input
+                          type="email"
+                          name="multiStepsEmail"
+                          id="multiStepsEmail"
+                          class="form-control"
+                          placeholder="john.doe@email.com"
+                          aria-label="john.doe" />
+                      </div>
+                      <div class="col-sm-6 form-password-toggle">
+                        <label class="form-label" for="multiStepsPass">Password</label>
+                        <div class="input-group input-group-merge">
+                          <input
+                            type="password"
+                            id="multiStepsPass"
+                            name="multiStepsPass"
+                            class="form-control"
+                            placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                            aria-describedby="multiStepsPass2" />
+                          <span class="input-group-text cursor-pointer" id="multiStepsPass2"
+                            ><i class="ti ti-eye-off"></i
+                          ></span>
                         </div>
-                        <!-- Account Details -->
-                        <div class="tab-pane fade" id="form-tabs-account" role="tabpanel">
-                          <form>
-                            <div class="row g-6">
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-username"
-                                    >Username</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-username"
-                                      class="form-control"
-                                      placeholder="john.doe" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-email">Email</label>
-                                  <div class="col-sm-9">
-                                    <div class="input-group input-group-merge">
-                                      <input
-                                        type="text"
-                                        id="formtabs-email"
-                                        class="form-control"
-                                        placeholder="john.doe"
-                                        aria-label="john.doe"
-                                        aria-describedby="formtabs-email2" />
-                                      <span class="input-group-text" id="formtabs-email2">@example.com</span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row form-password-toggle">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-password"
-                                    >Password</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <div class="input-group input-group-merge">
-                                      <input
-                                        type="password"
-                                        id="formtabs-password"
-                                        class="form-control"
-                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                        aria-describedby="formtabs-password2" />
-                                      <span class="input-group-text cursor-pointer" id="formtabs-password2"
-                                        ><i class="ti ti-eye-off"></i
-                                      ></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row form-password-toggle">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-confirm-password"
-                                    >Confirm</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <div class="input-group input-group-merge">
-                                      <input
-                                        type="password"
-                                        id="formtabs-confirm-password"
-                                        class="form-control"
-                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                        aria-describedby="formtabs-confirm-password2" />
-                                      <span class="input-group-text cursor-pointer" id="formtabs-confirm-password2"
-                                        ><i class="ti ti-eye-off"></i
-                                      ></span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row mt-6">
-                              <div class="col-md-6">
-                                <div class="row justify-content-end">
-                                  <div class="col-sm-9">
-                                    <button type="submit" class="btn btn-primary me-4">Submit</button>
-                                    <button type="reset" class="btn btn-label-secondary">Cancel</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </form>
+                      </div>
+                      <div class="col-sm-6 form-password-toggle">
+                        <label class="form-label" for="multiStepsConfirmPass">Confirm Password</label>
+                        <div class="input-group input-group-merge">
+                          <input
+                            type="password"
+                            id="multiStepsConfirmPass"
+                            name="multiStepsConfirmPass"
+                            class="form-control"
+                            placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                            aria-describedby="multiStepsConfirmPass2" />
+                          <span class="input-group-text cursor-pointer" id="multiStepsConfirmPass2"
+                            ><i class="ti ti-eye-off"></i
+                          ></span>
                         </div>
-                        <!-- Social Links -->
-                        <div class="tab-pane fade" id="form-tabs-social" role="tabpanel">
-                          <form>
-                            <div class="row g-6">
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-twitter"
-                                    >Twitter</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-twitter"
-                                      class="form-control"
-                                      placeholder="https://twitter.com/abc" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-facebook"
-                                    >Facebook</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-facebook"
-                                      class="form-control"
-                                      placeholder="https://facebook.com/abc" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-google"
-                                    >Google+</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-google"
-                                      class="form-control"
-                                      placeholder="https://plus.google.com/abc" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-linkedin"
-                                    >Linkedin</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-linkedin"
-                                      class="form-control"
-                                      placeholder="https://linkedin.com/abc" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-instagram"
-                                    >Instagram</label
-                                  >
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-instagram"
-                                      class="form-control"
-                                      placeholder="https://instagram.com/abc" />
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="col-md-6">
-                                <div class="row">
-                                  <label class="col-sm-3 col-form-label text-sm-end" for="formtabs-quora">Quora</label>
-                                  <div class="col-sm-9">
-                                    <input
-                                      type="text"
-                                      id="formtabs-quora"
-                                      class="form-control"
-                                      placeholder="https://quora.com/abc" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="row mt-6">
-                              <div class="col-md-6">
-                                <div class="row justify-content-end">
-                                  <div class="col-sm-9">
-                                    <button type="submit" class="btn btn-primary me-4">Submit</button>
-                                    <button type="reset" class="btn btn-label-secondary">Cancel</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </form>
-                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label" for="multiStepsURL">Profile Link</label>
+                        <input
+                          type="text"
+                          name="multiStepsURL"
+                          id="multiStepsURL"
+                          class="form-control"
+                          placeholder="johndoe/profile"
+                          aria-label="johndoe" />
+                      </div>
+                      <div class="col-12 d-flex justify-content-between">
+                        <button class="btn btn-label-secondary btn-prev" disabled>
+                          <i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
+                          <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                        </button>
+                        <button class="btn btn-primary btn-next">
+                          <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span>
+                          <i class="ti ti-arrow-right ti-xs"></i>
+                        </button>
                       </div>
                     </div>
                   </div>
-                </div>
+                  <!-- Personal Info -->
+                  <div id="personalInfoValidation" class="content">
+                    <div class="content-header mb-6">
+                      <h4 class="mb-0">Personal Information</h4>
+                      <p class="mb-0">Enter Your Personal Information</p>
+                    </div>
+                    <div class="row g-6">
+                      <div class="col-sm-6">
+                        <label class="form-label" for="multiStepsFirstName">First Name</label>
+                        <input
+                          type="text"
+                          id="multiStepsFirstName"
+                          name="multiStepsFirstName"
+                          class="form-control"
+                          placeholder="John" />
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label" for="multiStepsLastName">Last Name</label>
+                        <input
+                          type="text"
+                          id="multiStepsLastName"
+                          name="multiStepsLastName"
+                          class="form-control"
+                          placeholder="Doe" />
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label" for="multiStepsMobile">Mobile</label>
+                        <div class="input-group">
+                          <span class="input-group-text">US (+1)</span>
+                          <input
+                            type="text"
+                            id="multiStepsMobile"
+                            name="multiStepsMobile"
+                            class="form-control multi-steps-mobile"
+                            placeholder="202 555 0111" />
+                        </div>
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label" for="multiStepsPincode">Pincode</label>
+                        <input
+                          type="text"
+                          id="multiStepsPincode"
+                          name="multiStepsPincode"
+                          class="form-control multi-steps-pincode"
+                          placeholder="Postal Code"
+                          maxlength="6" />
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label" for="multiStepsAddress">Address</label>
+                        <input
+                          type="text"
+                          id="multiStepsAddress"
+                          name="multiStepsAddress"
+                          class="form-control"
+                          placeholder="Address" />
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label" for="multiStepsArea">Landmark</label>
+                        <input
+                          type="text"
+                          id="multiStepsArea"
+                          name="multiStepsArea"
+                          class="form-control"
+                          placeholder="Area/Landmark" />
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label" for="multiStepsCity">City</label>
+                        <input type="text" id="multiStepsCity" class="form-control" placeholder="Jackson" />
+                      </div>
+                      <div class="col-sm-6">
+                        <label class="form-label" for="multiStepsState">State</label>
+                        <select id="multiStepsState" class="select2 form-select" data-allow-clear="true">
+                          <option value="">Select</option>
+                          <option value="AL">Alabama</option>
+                          <option value="AK">Alaska</option>
+                          <option value="AZ">Arizona</option>
+                          <option value="AR">Arkansas</option>
+                          <option value="CA">California</option>
+                          <option value="CO">Colorado</option>
+                          <option value="CT">Connecticut</option>
+                          <option value="DE">Delaware</option>
+                          <option value="DC">District Of Columbia</option>
+                          <option value="FL">Florida</option>
+                          <option value="GA">Georgia</option>
+                          <option value="HI">Hawaii</option>
+                          <option value="ID">Idaho</option>
+                          <option value="IL">Illinois</option>
+                          <option value="IN">Indiana</option>
+                          <option value="IA">Iowa</option>
+                          <option value="KS">Kansas</option>
+                          <option value="KY">Kentucky</option>
+                          <option value="LA">Louisiana</option>
+                          <option value="ME">Maine</option>
+                          <option value="MD">Maryland</option>
+                          <option value="MA">Massachusetts</option>
+                          <option value="MI">Michigan</option>
+                          <option value="MN">Minnesota</option>
+                          <option value="MS">Mississippi</option>
+                          <option value="MO">Missouri</option>
+                          <option value="MT">Montana</option>
+                          <option value="NE">Nebraska</option>
+                          <option value="NV">Nevada</option>
+                          <option value="NH">New Hampshire</option>
+                          <option value="NJ">New Jersey</option>
+                          <option value="NM">New Mexico</option>
+                          <option value="NY">New York</option>
+                          <option value="NC">North Carolina</option>
+                          <option value="ND">North Dakota</option>
+                          <option value="OH">Ohio</option>
+                          <option value="OK">Oklahoma</option>
+                          <option value="OR">Oregon</option>
+                          <option value="PA">Pennsylvania</option>
+                          <option value="RI">Rhode Island</option>
+                          <option value="SC">South Carolina</option>
+                          <option value="SD">South Dakota</option>
+                          <option value="TN">Tennessee</option>
+                          <option value="TX">Texas</option>
+                          <option value="UT">Utah</option>
+                          <option value="VT">Vermont</option>
+                          <option value="VA">Virginia</option>
+                          <option value="WA">Washington</option>
+                          <option value="WV">West Virginia</option>
+                          <option value="WI">Wisconsin</option>
+                          <option value="WY">Wyoming</option>
+                        </select>
+                      </div>
+                      <div class="col-12 d-flex justify-content-between">
+                        <button class="btn btn-label-secondary btn-prev">
+                          <i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
+                          <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                        </button>
+                        <button class="btn btn-primary btn-next">
+                          <span class="align-middle d-sm-inline-block d-none me-sm-1 me-0">Next</span>
+                          <i class="ti ti-arrow-right ti-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Billing Links -->
+                  <div id="billingLinksValidation" class="content">
+                    <div class="content-header mb-6">
+                      <h4 class="mb-0">Select Plan</h4>
+                      <p class="mb-0">Select plan as per your requirement</p>
+                    </div>
+                    <!-- Custom plan options -->
+                    <div class="row gap-md-0 gap-4 mb-12">
+                      <div class="col-md">
+                        <div class="form-check custom-option custom-option-icon">
+                          <label class="form-check-label custom-option-content" for="basicOption">
+                            <span class="custom-option-body">
+                              <span class="d-block mb-2 h5">Basic</span>
+                              <span>A simple start for start ups & Students</span>
+                              <span class="d-flex justify-content-center mt-2">
+                                <sup class="text-primary h6 fw-normal pt-2 mb-0">$</sup>
+                                <span class="fw-medium h3 text-primary mb-0">0</span>
+                                <sub class="h6 fw-normal mt-3 mb-0 text-muted">/month</sub>
+                              </span>
+                            </span>
+                            <input
+                              name="customRadioIcon"
+                              class="form-check-input"
+                              type="radio"
+                              value=""
+                              id="basicOption" />
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md">
+                        <div class="form-check custom-option custom-option-icon">
+                          <label class="form-check-label custom-option-content" for="standardOption">
+                            <span class="custom-option-body">
+                              <span class="d-block mb-2 h5">Standard</span>
+                              <span>For small to medium businesses</span>
+                              <span class="d-flex justify-content-center mt-2">
+                                <sup class="text-primary h6 fw-normal pt-2 mb-0">$</sup>
+                                <span class="fw-medium h3 text-primary mb-0">99</span>
+                                <sub class="h6 fw-normal mt-3 mb-0 text-muted">/month</sub>
+                              </span>
+                            </span>
+                            <input
+                              name="customRadioIcon"
+                              class="form-check-input"
+                              type="radio"
+                              value=""
+                              id="standardOption"
+                              checked />
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md">
+                        <div class="form-check custom-option custom-option-icon">
+                          <label class="form-check-label custom-option-content" for="enterpriseOption">
+                            <span class="custom-option-body">
+                              <span class="d-block mb-2 h5">Enterprise</span>
+                              <span>Solution for enterprise & organizations</span>
+                              <span class="d-flex justify-content-center mt-2">
+                                <sup class="text-primary h6 fw-normal pt-2 mb-0">$</sup>
+                                <span class="fw-medium h3 text-primary mb-0">499</span>
+                                <sub class="h6 fw-normal mt-3 mb-0 text-muted">/year</sub>
+                              </span>
+                            </span>
+                            <input
+                              name="customRadioIcon"
+                              class="form-check-input"
+                              type="radio"
+                              value=""
+                              id="enterpriseOption" />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <!--/ Custom plan options -->
+                    <div class="content-header mb-6">
+                      <h4 class="mb-0">Payment Information</h4>
+                      <p class="mb-0">Enter your card information</p>
+                    </div>
+                    <!-- Credit Card Details -->
+                    <div class="row g-6">
+                      <div class="col-md-12">
+                        <label class="form-label w-100" for="multiStepsCard">Card Number</label>
+                        <div class="input-group input-group-merge">
+                          <input
+                            id="multiStepsCard"
+                            class="form-control multi-steps-card"
+                            name="multiStepsCard"
+                            type="text"
+                            placeholder="1356 3215 6548 7898"
+                            aria-describedby="multiStepsCardImg" />
+                          <span class="input-group-text cursor-pointer" id="multiStepsCardImg"
+                            ><span class="card-type"></span
+                          ></span>
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <label class="form-label" for="multiStepsName">Name On Card</label>
+                        <input
+                          type="text"
+                          id="multiStepsName"
+                          class="form-control"
+                          name="multiStepsName"
+                          placeholder="John Doe" />
+                      </div>
+                      <div class="col-6 col-md-4">
+                        <label class="form-label" for="multiStepsExDate">Expiry Date</label>
+                        <input
+                          type="text"
+                          id="multiStepsExDate"
+                          class="form-control multi-steps-exp-date"
+                          name="multiStepsExDate"
+                          placeholder="MM/YY" />
+                      </div>
+                      <div class="col-6 col-md-3">
+                        <label class="form-label" for="multiStepsCvv">CVV Code</label>
+                        <div class="input-group input-group-merge">
+                          <input
+                            type="text"
+                            id="multiStepsCvv"
+                            class="form-control multi-steps-cvv"
+                            name="multiStepsCvv"
+                            maxlength="3"
+                            placeholder="654" />
+                          <span class="input-group-text cursor-pointer" id="multiStepsCvvHelp"
+                            ><i
+                              class="ti ti-help text-muted"
+                              data-bs-toggle="tooltip"
+                              data-bs-placement="top"
+                              title="Card Verification Value"></i
+                          ></span>
+                        </div>
+                      </div>
+                      <div class="col-12 d-flex justify-content-between">
+                        <button class="btn btn-label-secondary btn-prev">
+                          <i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
+                          <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                        </button>
+                        <button type="submit" class="btn btn-success btn-next btn-submit">Submit</button>
+                      </div>
+                    </div>
+                    <!--/ Credit Card Details -->
+                  </div>
+                </form>
               </div>
+            </div>
+          </div>
+        </div>
 @endsection
-@push('scripts') 
-<script src="{{asset('assets/js/cards-actions.js')}}"></script>
-    <script src="{{asset('assets/vendor/libs/block-ui/block-ui.js')}}"></script>
-    <script src="{{asset('assets/vendor/libs/sortablejs/sortable.js')}}"></script>
-    <script src="{{asset('assets/vendor/libs/select2/select2.js')}}"></script>
-    <script src="{{asset('assets/vendor/libs/tagify/tagify.js')}}"></script>
-    <script src="{{asset('assets/vendor/libs/bootstrap-select/bootstrap-select.js')}}"></script>
-    <script src="{{asset('assets/vendor/libs/bloodhound/bloodhound.js')}}"></script>
-    <script src="{{asset('assets/js/forms-selects.js')}}"></script>
-    <script src="{{asset('assets/js/forms-tagify.js')}}"></script>
-    <script src="{{asset('assets/js/forms-typeahead.js')}}"></script>
+@push('scripts')
+
+<script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
+  <script src="{{ asset('assets/vendor/libs/cleavejs/cleave-phone.js') }}"></script>
+  <script src="{{ asset('assets/vendor/libs/bs-stepper/bs-stepper.js') }}"></script>
+  <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+  <script src="{{ asset('assets/vendor/libs/@form-validation/popular.js') }}"></script>
+  <script src="{{ asset('assets/vendor/libs/@form-validation/bootstrap5.js') }}"></script>
+  <script src="{{ asset('assets/vendor/libs/@form-validation/auto-focus.js') }}"></script>
+ <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
+<script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
+     <script src="{{ asset('assets/js/pages-auth-multisteps.js') }}"></script>
 @endpush
