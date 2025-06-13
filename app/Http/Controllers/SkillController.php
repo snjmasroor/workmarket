@@ -88,7 +88,7 @@ class SkillController extends Controller
             $skill->save();
 
             // Step 4: Redirect with success message
-            return redirect()->route('show.skills')->with('success', 'Skill updated successfully.');
+            return redirect()->route('admin.skills.show')->with('success', 'Skill updated successfully.');
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             // Specific error if skill not found

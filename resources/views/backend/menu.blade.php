@@ -3,7 +3,7 @@
               <div class="container-xxl d-flex h-100">
                 <ul class="menu-inner pb-2 pb-xl-0">
                   <!-- Dashboards -->
-                  <li class="menu-item active">
+                  <li class="menu-item {{ request()->routeIs(['superadmin.home', 'admin.home']) ? 'active' : '' }}">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                       <i class="menu-icon tf-icons ti ti-smart-home"></i>
                       <div data-i18n="Dashboards">Dashboards</div>
@@ -43,14 +43,14 @@
                   </li>
 
                   <!-- Layouts -->
-                  <li class="menu-item">
+                  <li class="menu-item {{ request()->routeIs('admin.user*') ? 'active' : '' }}">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                       <i class="menu-icon tf-icons ti ti-user"></i>
                       <div data-i18n="User">Users</div>
                     </a>
 
                     <ul class="menu-sub">
-                      <li class="menu-item">
+                      <li class="menu-item {{ request()->routeIs('admin.user.index') ? 'active' : '' }}">
                         <a href="{{route('admin.user.index')}}" class="menu-link">
                           
                           <div data-i18n="Show User">Users</div>
@@ -78,26 +78,26 @@
                   </li>
 
                   <!-- Apps -->
-                  <li class="menu-item">
+                  <li class="menu-item {{ request()->routeIs(['admin.industries*', 'admin.skills*', 'industry-skills*']) ? 'active' : '' }}">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                       <i class="menu-icon tf-icons ti ti-layout-grid-add"></i>
                       <div data-i18n="Industry">Industry & Skills</div>
                     </a>
                     <ul class="menu-sub">
-                      <li class="menu-item">
-                        <a href="{{route('show.industry')}}" class="menu-link">
+                      <li class="menu-item {{ request()->routeIs('admin.industries.show') ? 'active' : '' }}">
+                        <a href="{{route('admin.industries.show')}}" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-mail"></i>
                           <div data-i18n="Show Industry">Industry</div>
                         </a>
                       </li>
-                      <li class="menu-item">
-                        <a href="{{route('show.skills')}}" class="menu-link">
+                      <li class="menu-item {{ request()->routeIs('admin.skills.show') ? 'active' : '' }} ">
+                        <a href="{{route('admin.skills.show')}}" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-messages"></i>
                           <div data-i18n="Skill">Skills</div>
                         </a>
                       </li>
-                      <li class="menu-item">
-                        <a href="{{route('show.industry-skills')}}" class="menu-link">
+                      <li class="menu-item {{ request()->routeIs('industry-skills.show') ? 'active' : '' }}">
+                        <a href="{{route('industry-skills.show')}}" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-calendar"></i>
                           <div data-i18n="Industry Skill">Industry Skill</div>
                         </a>
@@ -106,7 +106,7 @@
                   </li>
 
                   <!-- Pages -->
-                  <li class="menu-item">
+                  <li class="menu-item {{ request()->routeIs('admin.jobs*') ? 'active' : '' }}">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                       <i class="menu-icon tf-icons ti ti-file"></i>
 
@@ -114,7 +114,7 @@
                     </a>
                     <ul class="menu-sub">
                       <li class="menu-item">
-                        <a href="{{route('show.jobs')}}" class="menu-link">
+                        <a href="{{route('admin.jobs.show')}}" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-files"></i>
                           <div data-i18n="Job">Jobs</div>
                         </a>

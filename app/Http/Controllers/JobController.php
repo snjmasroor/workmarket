@@ -11,7 +11,8 @@ use App\Models\Job;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Purifier;
+use Yajra\DataTables\DataTables;
+
 
 class JobController extends Controller
 {
@@ -19,7 +20,46 @@ class JobController extends Controller
     public function index() {
         
            $jobs = Job::with('industry')->get();
-          return view('admin.jobs.index', compact('jobs'));
+          return view('admin.jobs.job-index', compact('jobs'));
+    }
+
+    public function data(Request $request)
+    {
+        return DataTables::of(Job::with('industry')->get())
+            ->addColumn('industry_name', function ($row) {
+                return $row->industry->name ?? 'N/A';
+            })
+            ->addColumn('description', function ($row) {
+                return Str::limit(strip_tags(htmlspecialchars_decode($row->description)), 50) ?? 'N/A';
+            })
+            ->addColumn('flags', function ($row) {
+                if ($row->active === true || $row->active == 1) {
+                    return '<span class="badge bg-label-success me-1">Active</span>';
+                } elseif ($row->active === false || $row->active == 0) {
+                    return '<span class="badge bg-label-warning me-1">Inactive</span>';
+                } else {
+                    return '<span class="badge bg-secondary">None</span>';
+                }
+            })
+            ->addColumn('action', function ($row) {
+                $editUrl = route('admin.industries.edit', $row->id);
+                $deleteUrl = route('admin.industries.destroy', $row->id);
+                return '<div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                <i class="ti ti-dots-vertical"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                <a class="dropdown-item" href="'.$editUrl.'"
+                                    ><i class="ti ti-pencil me-1"></i> Edit</a
+                                >
+                                <a class="dropdown-item" href="javascript:void(0);"
+                                    ><i class="ti ti-trash me-1"></i> Delete</a
+                                >
+                                </div>
+                            </div>';
+            })
+            ->rawColumns(['flags', 'action']) // allow HTML rendering
+            ->make(true);
     }
 
     public function create() {

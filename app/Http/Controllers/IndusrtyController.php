@@ -32,10 +32,19 @@ public function data(Request $request)
         ->addColumn('action', function ($row) {
             $editUrl = route('admin.industries.edit', $row->id);
             $deleteUrl = route('admin.industries.destroy', $row->id);
-
-            return '
-                <a href="'.$editUrl.'" class="btn btn-sm btn-primary">Edit</a>
-            ';
+            return '<div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                              <i class="ti ti-dots-vertical"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                              <a class="dropdown-item" href="'.$editUrl.'"
+                                ><i class="ti ti-pencil me-1"></i> Edit</a
+                              >
+                              <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="ti ti-trash me-1"></i> Delete</a
+                              >
+                            </div>
+                          </div>';
         })
         ->rawColumns(['flags', 'action']) // allow HTML rendering
         ->make(true);
@@ -60,9 +69,9 @@ public function store(Request $request) {
             $industry->addFlag(Industry::FLAG_ACTIVE);
         }
         if (!$industry->save()) {
-            return redirect()->route('show.industry')->with('error', 'Industry created successfully.');
+            return redirect()->route('admin.industries.show')->with('error', 'Industry created successfully.');
         }else {
-            return redirect()->route('show.industry')->with('success', 'Industry created successfully.');
+            return redirect()->route('admin.industries.show')->with('success', 'Industry created successfully.');
 
         }
 
@@ -92,7 +101,7 @@ public function update (Request $request, $id) {
     $industry->save();
 
     // Redirect back with success message
-    return redirect()->route('show.industry')->with('success', 'Industry updated successfully.');
+    return redirect()->route('admin.industries.show')->with('success', 'Industry updated successfully.');
 }
 
     

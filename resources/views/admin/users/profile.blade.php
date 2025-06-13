@@ -22,17 +22,17 @@
                         <div
                           class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-5 flex-md-row flex-column gap-4">
                           <div class="user-profile-info">
-                            <h4 class="mb-2 mt-lg-6">{{$user->name}}</h4>
+                            <h4 class="mb-2 mt-lg-6">{{$user->name ?? ''}}</h4>
                             <ul
                               class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4 my-2">
                               <li class="list-inline-item d-flex gap-2 align-items-center">
-                                <i class="ti ti-palette ti-lg"></i><span class="fw-medium">{{$user->industry->name}}</span>
+                                <i class="ti ti-palette ti-lg"></i><span class="fw-medium">{{$user->industry->name ?? ''}}</span>
                               </li>
                               <li class="list-inline-item d-flex gap-2 align-items-center">
-                                <i class="ti ti-map-pin ti-lg"></i><span class="fw-medium">{{$user->latestAddress->city}}</span>
+                                <i class="ti ti-map-pin ti-lg"></i><span class="fw-medium">{{$user->latestAddress->city ?? ''}}</span>
                               </li>
                               <li class="list-inline-item d-flex gap-2 align-items-center">
-                                <i class="ti ti-calendar ti-lg"></i><span class="fw-medium"> Joined {{$user->latestAddress->created_at}}</span>
+                                <i class="ti ti-calendar ti-lg"></i><span class="fw-medium"> Joined {{$user->latestAddress->created_at ?? ''}}</span>
                               </li>
                             </ul>
                           </div>
@@ -88,7 +88,7 @@
                       <ul class="list-unstyled my-3 py-1">
                         <li class="d-flex align-items-center mb-4">
                           <i class="ti ti-user ti-lg"></i><span class="fw-medium mx-2">Full Name:</span>
-                          <span>{{$user->name}}</span>
+                          <span>{{$user->name ?? ''}}</span>
                         </li>
                         <li class="d-flex align-items-center mb-4">
                           <i class="ti ti-check ti-lg"></i><span class="fw-medium mx-2">Status:</span>
@@ -96,10 +96,10 @@
                         </li>
                         <li class="d-flex align-items-center mb-4">
                           <i class="ti ti-crown ti-lg"></i><span class="fw-medium mx-2">Industry:</span>
-                          <span>{{ $user->industry->name }}</span>
+                          <span>{{ $user->industry->name ?? ''}}</span>
                         </li>
                         <li class="d-flex align-items-center mb-4">
-                          <i class="ti ti-flag ti-lg"></i><span class="fw-medium mx-2">Country:</span> <span>{{ $user->latestAddress->country }}</span>
+                          <i class="ti ti-flag ti-lg"></i><span class="fw-medium mx-2">Country:</span> <span>{{ $user->latestAddress->country ?? '' }}</span>
                         </li>
                         <li class="d-flex align-items-center mb-2">
                           <i class="ti ti-language ti-lg"></i><span class="fw-medium mx-2">Languages:</span>

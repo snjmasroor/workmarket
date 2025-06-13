@@ -18,7 +18,7 @@
       <button class="btn btn-label-primary me-4">
         <span class="align-middle"> Back</span>
       </button>
-      <a href="{{route('admin.industry.create')}}" class="btn btn-primary">Add Industry</a>
+      <a href="{{route('admin.industries.create')}}" class="btn btn-primary">Add Industry</a>
     </div>
   </div>
 </div>

@@ -2,7 +2,7 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/select2/select2.css')}}" />
-<link rel="stylesheet" href="{{asset('assets/vendor/libs/tagify/tagify.css')}}" />  
+ 
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/bootstrap-select/bootstrap-select.css')}}" />  
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/animate-css/animate.css')}}" />
 <link rel="stylesheet" href="{{asset('assets/vendor/libs/sweetalert2/sweetalert2.css')}}" />
@@ -13,28 +13,29 @@
 
 <div class="card">
   <div class="card-header sticky-element bg-label-secondary d-flex justify-content-sm-between align-items-sm-center flex-column flex-sm-row">
-    <h5 class="card-title mb-sm-0 me-2">Users</h5>
+    <h5 class="card-title mb-sm-0 me-2">Jobs</h5>
     <div class="action-btns">
       <button class="btn btn-label-primary me-4">
         <span class="align-middle"> Back</span>
       </button>
-      <a href="" class="btn btn-primary">Add User</a>
+      <a href="{{route('admin.jobs.create')}}" class="btn btn-primary">Add Jobs</a>
     </div>
   </div>
 </div>
 <div class="card">
-  <h5 class="card-header">All User</h5>
+  <h5 class="card-header">All Jobs</h5>
   <div class="card-datatable table-responsive">
     <table class="dt-responsive table">
       <thead class="table-dark">
         <tr>
           <th>Id</th>
-          <th>Firstname</th>
-          <th>Lastname</th>
-          <th>Username</th>
-          <th>Email</th>
+          <th>Title</th>
+            <th>Description</th>
+            <th>Industry</th>
+            <th>Budget</th>
+            <th>Deadline</th>
           <th>Status</th>
-          <th>Action</th>
+          <th>Active</th>
         </tr>
       </thead>
     </table>
@@ -54,7 +55,6 @@
 
 <!-- Main JS -->
 <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
-<script src="{{ asset('assets/js/forms-tagify.js') }}"></script>
 <script src="{{ asset('assets/js/forms-typeahead.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
 <script src="{{ asset('assets/vendor/libs/tagify/tagify.js') }}"></script>
@@ -70,26 +70,25 @@ $('.dt-responsive').DataTable().clear().destroy();
   $('.dt-responsive').DataTable({
     processing: true,
     serverSide: true,
-    ajax: '{{ route("admin.user.index.data") }}',
+    ajax: '{{ route("admin.jobs.data") }}',
     columns: [
-        { data: 'id', name: 'id' },
-        { data: 'firstname', name: 'firstname' },
-        { data: 'lastname', name: 'lastname' },
-        { data: 'username', name: 'username' },
-        { data: 'email', name: 'email' },
-        { data: 'flags', name: 'flags', orderable: false, searchable: false },
-        { data: 'action', name: 'action', orderable: false, searchable: false },
+    { data: 'id', name: 'id' },
+    { data: 'title', name: 'title' },
+    { data: 'description', name: 'description' },
+    { data: 'industry_name', name: 'industry_name' },
+    { data: 'budget', name: 'budget' },
+    { data: 'deadline', name: 'deadline' },
+    { data: 'flags', name: 'flags' },
+    { data: 'action', name: 'action', orderable: false, searchable: false }
    
-    ]
+  ], 
+    dom: 'Bfrtip',
+    buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+    responsive: true
   });
+  
 });
 
-
-$('.dt-responsive').DataTable({
-  dom: 'Bfrtip',
-  buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
-  // other config
-});
 </script> 
 
 
