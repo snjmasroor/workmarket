@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/@form-validation/form-validation.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/tagify/tagify.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 @endpush 
 @section('page-content') 
 <div class="d-flex col-lg-12 align-items-center justify-content-center authentication-bg px-9">
@@ -18,18 +20,20 @@
             <a class="nav-link active" data-tab="tab1" href="#"><span class="bs-stepper-circle"><i class="ti ti-file-analytics ti-md"></i></span>
               <span class="bs-stepper-label">
                 <span class="bs-stepper-title">Basic Job Detail</span>
+                
               </span></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" data-tab="tab2" href="#"><span class="bs-stepper-circle"><i class="ti ti-user ti-md"></i></span>
               <span class="bs-stepper-label">
                 <span class="bs-stepper-title">Education Detail</span>
+                
               </span></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" data-tab="tab3" href="#"><span class="bs-stepper-circle"><i class="ti ti-credit-card ti-md"></i></span>
               <span class="bs-stepper-label">
-                <span class="bs-stepper-title">Certifications</span>
+                <span class="bs-stepper-title">Certifications Tools and Test</span>
               </span></a>
           </li>
           <li class="nav-item">
@@ -41,7 +45,8 @@
           </ul>
           <div id="tab1" class="tab-content-section">
             <div class="content-header mb-6">
-              <h4 class="mb-0">Job Basic Information</h4>
+              <h5 class="mb-0">Job Basic Information</h5>
+              <p>The official name or designation of the job role, This should be clear and descriptive.</p>
             </div>
             <div class="row g-6">
               <div class="col-sm-6">
@@ -50,8 +55,7 @@
               </div>
               <div class="col-sm-6">
                   <label for="industry_id" class="form-label">Industry <span class="text-danger">*</span></label>
-                  <select data-allow-clear="true" name="industry_id" id="industry_id" class="form-control form-select @error('industry_id') is-invalid @enderror" required>
-                    <option value="">-- Select Industry relevant to the job --</option>
+                  <select data-allow-clear="true" name="industry_id" id="industry_id" class="select2 form-select form-select-lg @error('industry_id') is-invalid @enderror" required>
                     @foreach($industries as $industry)
                     <option value="{{ $industry->id }}">{{ $industry->name }}</option>
                     @endforeach
@@ -95,7 +99,7 @@
               </div>
               <div class="col-sm-6">
                 <label class="form-label" for="start_date">Application Start Date</label>
-                <input type="text" id="start_date" name="start_date" class="form-control" placeholder="Start Date" />
+                <input type="text" id="start_date" name="start_date" class="form-control " placeholder="Start Date" />
               </div>
               <div class="col-sm-6">
                 <label class="form-label" for="deadline">Application Deadline</label>
@@ -103,7 +107,7 @@
               </div>
               <div class="col-md-12">
                 <label class="form-label" for="estimated_hours">Description</label>
-                <textarea name="description" id="description" class="form-control" rows="6">{{ old('description') }}</textarea>
+                <textarea name="description" id="description" rows="4" cols="5" class="form-control summernote">{{ old('description') }}</textarea>
               </div>
               <div class="col-12 d-flex justify-content-between">
                 <button class="btn btn-label-secondary btn-prev" disabled> <i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
@@ -117,13 +121,30 @@
           </div>
           <div id="tab2" class="tab-content-section d-none">
             <div class="content-header mb-6">
-              <h4 class="mb-0">Job Education Requirement</h4>
+              <h5 class="mb-0">Job Education Requirement</h5>
+              <p>This information helps employers assess a candidate's qualifications</p>
             </div>
               <div class="row g-6">
                 <div class="col-sm-6">
-                  <label class="form-label" for="jobTitle"></label>
-                   <input type="text" name="title" id="jobTitle" class="form-control" placeholder="e.g PHP Developer" />
+                  <label class="form-label" for="education_level">Minimum Qualification</label>
+                  <input type="text" name="education_level" id="education_level" class="form-control" placeholder="e.g. Bachelor's Degree, Diploma" />
                 </div>
+                
+                <div class="col-sm-6">
+                  <label class="form-label" for="min_years_experience">Minimum Experience</label>
+                  <input type="number" step="0.01" name="min_years_experience" id="min_years_experience" class="form-control" placeholder="e.g. 2, 3.5, 5" />
+                </div>
+                
+                <div class="col-sm-6">
+                  <label class="form-label" for="field_of_study">Field of Study</label>
+                  <input type="text" name="field_of_study" id="field_of_study" class="form-control" placeholder="e.g. Computer Science, Business, Engineering" />
+                </div>
+                
+                <div class="col-sm-6">
+                  <label class="form-label" for="language">Language</label>
+                  <input type="text" name="language" id="language" class="form-control" placeholder="e.g. English, French, Chinese" />
+                </div>
+               
                 <div class="col-12 d-flex justify-content-between">
                   <button class="btn btn-secondary prev-btn" data-prev="tab1"><i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
                     <span class="align-middle d-sm-inline-block d-none">Previous</span>
@@ -135,7 +156,107 @@
               </div>
           </div>
           <div id="tab3" class="tab-content-section d-none">
+            <div class="content-header mb-6">
+              <h5 class="mb-0">Certification, Test and Tools</h5>
+              <p>This section includes your Certifications, Required Tests, and Tools proficiency—all in one place for easy review.</p>
+            </div>
             <div class="row g-6">
+              
+              <div class="mb-3">
+                <div id="certificate-wrapper">
+                  <div class="row g-3 certificate-row mb-2">
+                    <div class="col-md-6">
+                      <label class="form-label">Certification Name</label>
+                      <select  name="certificate[0][]" id="" class="select2 form-select form-select-lg">
+                        @foreach($certificates as $certification)
+                          <option value="{{ $certification->id }}">{{ $certification->name }}</option>
+                        @endforeach
+                      </select>
+                     
+                    </div>
+                    
+                    <div class="col-md-4">
+                      <label class="form-label">Issued By</label>
+                      <input type="text" name="certificate[0][issueby]" class="form-control" placeholder="e.g. Google, Microsoft, Coursera">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                      <button type="button" class="btn btn-danger remove-certificate"><i class="ti ti-trash"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-primary mt-2" id="add-certificate">Add Another Certification</button>
+              </div>
+
+                 <div class="col-sm-6">
+                  <label class="switch switch-info">
+                  <input type="checkbox" class="switch-input" id="test_required_checkbox" />
+                  <span class="switch-toggle-slider">
+                    <span class="switch-on">
+                      <i class="ti ti-check"></i>
+                    </span>
+                      <span class="switch-off">
+                        <i class="ti ti-x"></i>
+                      </span>
+                    </span>
+                    <span class="switch-label">Requirement for Test?</span>
+                  </label>
+                </div>
+                <div class="col-sm-6">
+                  <label class="switch switch-info">
+                  <input type="checkbox" class="switch-input" id="tools_required_checkbox" />
+                  <span class="switch-toggle-slider">
+                    <span class="switch-on">
+                      <i class="ti ti-check"></i>
+                    </span>
+                      <span class="switch-off">
+                        <i class="ti ti-x"></i>
+                      </span>
+                    </span>
+                    <span class="switch-label">Requirement for Tools?</span>
+                  </label>
+                </div>
+                <div class="row g-6" id="test_fields" style="display: none;">
+                  <div class="mb-3">
+                    <label class="form-label">Required Test</label>
+                    <div id="test-wrapper">
+                      <div class="row g-3 test-row mb-2">
+                        <div class="col-md-6">
+                          <label class="form-label">Test Title</label>
+                          <input type="text" name="test[0][title]" class="form-control" placeholder="Test title (e.g., Figma Proficiency)">
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label">Scoring Criteria</label>
+                          <input type="text" name="test[0][scoring_criteria]" class="form-control" placeholder="e.g., Minimum 80%">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                          <button type="button" class="btn btn-danger remove-test"><i class="ti ti-trash"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-primary mt-2" id="add-test">Add Another Test</button>
+                  </div>
+                 
+                </div>
+
+                <div class="row g-6" id="tool_fields" style="display: none;">
+                  <div class="mb-3">
+                    <label class="form-label">Required Tools</label>
+                    <div id="tool-wrapper">
+                      <div class="row g-3 tool-row mb-2">
+                        <div class="col-md-6">
+                          <input type="text" name="tools[0][name]" class="form-control" placeholder="Tool name (e.g., Figma)">
+                        </div>
+                        <div class="col-md-4">
+                          <input type="text" name="tools[0][version]" class="form-control" placeholder="Version (optional)">
+                        </div>
+                        <div class="col-md-2">
+                          <button type="button" class="btn btn-danger remove-tool"><i class="ti ti-trash"></i></button>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="add-tool">Add Another Tool</button>
+                  </div>
+                </div>
               <div class="col-12 d-flex justify-content-between">
               <button class="btn btn-secondary prev-btn" data-prev="tab2"><i class="ti ti-arrow-left ti-xs me-sm-2 me-0"></i>
                     <span class="align-middle d-sm-inline-block d-none">Previous</span></button>
@@ -161,7 +282,16 @@
                 @enderror
               </div>
               <div class="col-sm-6">
-                <label for="state" class="form-label">State </label>
+                <label for="country" class="form-label">Country</label>
+                <select class="select2 form-select form-select-lg @error('country') is-invalid @enderror" name="country" id="country" required>
+                  <option>country</option>
+                </select>
+                @error('country')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+              </div>
+              <div class="col-sm-6">
+                <label for="country" class="form-label">State </label>
                 <select class="select2 form-select form-select-lg @error('state') is-invalid @enderror" name="state" id="state" required>
                   <option>State</option>
                 </select>
@@ -247,9 +377,131 @@
 <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
 <script src="{{ asset('assets/js/forms-tagify.js') }}"></script>
 <script src="{{ asset('assets/js/forms-typeahead.js') }}"></script>
-  <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>  
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>  
 <script>
 $(document).ready(function () {
+
+      $('#selectpickerSelection').html('<option value="">Loading...</option>');
+
+      if (industryId) {
+        $.ajax({
+          url: '{{ route("get.skills.by.industry") }}',
+          type: 'GET',
+          data: { industry_id: industryId },
+          success: function (response) {
+            $('#selectpickerSelection').empty();
+            if (response.length > 0) {
+              $.each(response, function (key, skill) {
+                $('#selectpickerSelection').append('<option value="' + skill.id + '">' + skill.name + '</option>');
+              });
+            } else {
+              $('#selectpickerSelection').append('<option value="">No Skills Available</option>');
+            }
+          }
+        });
+      } else {
+        $('#selectpickerSelection').html('<option value="">-- Select Skill --</option>');
+      }
+  
+      const endPicker = flatpickr("#deadline", {
+        dateFormat: "Y-m-d",
+      });
+
+    flatpickr("#start_date", {
+      dateFormat: "Y-m-d",
+      onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length > 0) {
+          const minEndDate = new Date(selectedDates[0]);
+          minEndDate.setDate(minEndDate.getDate() + 10); // add 10 days
+          endPicker.set("minDate", minEndDate);
+        }
+      }
+    });
+
+  let toolIndex = 1;
+  let testIndex = 1; // Make sure this is defined somewhere globally
+
+    $("#add-test").on('click', function() {
+        const testHTML = `
+            <div class="row g-3 test-row mb-2">
+                <div class="col-sm-5">
+                    <label class="form-label" for="title">Test Title</label>
+                    <input type="text" name="test[${testIndex}][title]" class="form-control" placeholder="Title" />
+                </div>
+                <div class="col-sm-5">
+                    <label class="form-label" for="scoring_criteria">Scoring Criteria</label>
+                    <input type="text" name="test[${testIndex}][scoring_criteria]" class="form-control" placeholder="Criteria"/> 
+                </div>
+                <div class="col-sm-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-danger remove-test"><i class="ti ti-trash"></i></button>
+                </div>
+            </div>
+        `;
+
+        $('#test-wrapper').append(testHTML); 
+        testIndex++;
+    });
+
+    let certificateIndex = 1; // Make sure this is defined somewhere globally
+
+    $("#add-certificate").on('click', function() {
+        const certificateHTML = `
+            <div class="row g-3 certificate-row mb-2">
+      <div class="col-sm-5">
+        <label class="form-label" for="title">Certification Name</label>
+        <input type="text" name="certificate[${certificateIndex}][name]" class="form-control" placeholder="e.g. AWS Certified Developer" />
+      </div>
+      <div class="col-sm-5">
+        <label class="form-label" for="scoring_criteria">Issued By</label>
+        <input type="text" name="certificate[${certificateIndex}][issueby]" class="form-control" placeholder="e.g. Amazon, Coursera" />
+      </div>
+      <div class="col-sm-2 d-flex align-items-end">
+        <button type="button" class="btn btn-danger remove-certificate">
+          <i class="ti ti-trash"></i>
+        </button>
+      </div>
+    </div>
+        `;
+
+        $('#certificate-wrapper').append(certificateHTML); 
+        certificateIndex++;
+    });
+
+
+    $(document).on('click', '.remove-test', function () {
+      $(this).closest('.test-row').remove();
+    });
+
+    $(document).on('click', '.remove-certificate', function () {
+      $(this).closest('.certificate-row').remove();
+    });
+
+
+    $('#add-tool').on('click', function () {
+      const toolHtml = `
+        <div class="row g-3 tool-row mb-2">
+          <div class="col-md-6">
+            <input type="text" name="tools[${toolIndex}][name]" class="form-control" placeholder="Tool name">
+          </div>
+          <div class="col-md-4">
+            <input type="text" name="tools[${toolIndex}][version]" class="form-control" placeholder="Version (optional)">
+          </div>
+          <div class="col-md-2">
+            <button type="button" class="btn btn-danger remove-tool"><i class="ti ti-trash"></i></button>
+          </div>
+        </div>
+      `;
+
+      $('#tool-wrapper').append(toolHtml);
+        toolIndex++;
+    
+        });
+      $(document).on('click', '.remove-tool', function () {
+        $(this).closest('.tool-row').remove();
+      });
+
+
     $('#industry_id').on('change', function () {
       var industryId = $(this).val();
 
@@ -275,6 +527,26 @@ $(document).ready(function () {
         $('#selectpickerSelection').html('<option value="">-- Select Skill --</option>');
       }
     });
+
+    
+    $('#test_required_checkbox').on('change', function () {
+      if ($(this).is(':checked')) {
+        $('#test_fields').slideDown();
+      } else {
+        $('#test_fields').slideUp();
+      }
+    });
+    $('#tools_required_checkbox').on('change', function () {
+      if ($(this).is(':checked')) {
+        $('#tool_fields').slideDown();
+      } else {
+        $('#tool_fields').slideUp();
+      }
+    });
+
+  // Run once on page load (e.g. when editing a job)
+  $('#test_required_checkbox').trigger('change');
+  $('#tools_required_checkbox').trigger('change');
   });
 </script>
 <script>
@@ -303,6 +575,11 @@ $(document).ready(function () {
         });
         ClassicEditor
         .create(document.querySelector('#terms_acceptance'))
+        .catch(error => {
+            console.error(error);
+        });
+        ClassicEditor
+        .create(document.querySelector('#description1'))
         .catch(error => {
             console.error(error);
         });

@@ -7,6 +7,7 @@ use App\Models\Industry;
 use App\Models\Skill;
 use App\Models\IndustrySkill;
 use App\Models\JobQualification;
+use App\Models\Certification;
 use App\Models\Job;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -64,8 +65,9 @@ class JobController extends Controller
 
     public function create() {
         $industries = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->get();
+        $certificates = Certification::get();
         $skills = Skill::whereRaw('`flags` & ? = ?', [Skill::FLAG_ACTIVE, Skill::FLAG_ACTIVE])->get();
-        return view('admin.jobs.job-create', compact('industries', 'skills'));
+        return view('admin.jobs.job-create', compact('industries', 'skills', 'certificates'));
     }
 
    public function store(Request $request) {
