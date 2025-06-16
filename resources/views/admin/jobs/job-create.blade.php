@@ -176,8 +176,8 @@
                     </div>
                     
                     <div class="col-md-4">
-                      <label class="form-label">Issued By</label>
-                      <input type="text" name="certificate[0][issueby]" class="form-control" placeholder="e.g. Google, Microsoft, Coursera">
+                      <label class="form-label">Short Description</label>
+                      <input type="text" name="certificate[0][description]" class="form-control" placeholder="Short Description">
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                       <button type="button" class="btn btn-danger remove-certificate"><i class="ti ti-trash"></i></button>
@@ -222,7 +222,11 @@
                       <div class="row g-3 test-row mb-2">
                         <div class="col-md-6">
                           <label class="form-label">Test Title</label>
-                          <input type="text" name="test[0][title]" class="form-control" placeholder="Test title (e.g., Figma Proficiency)">
+                          <select  name="test[0][]" id="" class="select2 form-select form-select-lg">
+                            @foreach($tests as $test)
+                              <option value="{{ $test->id }}">{{ $test->title }}</option>
+                            @endforeach
+                          </select>
                         </div>
                         <div class="col-md-4">
                           <label class="form-label">Scoring Criteria</label>
@@ -244,10 +248,13 @@
                     <div id="tool-wrapper">
                       <div class="row g-3 tool-row mb-2">
                         <div class="col-md-6">
-                          <input type="text" name="tools[0][name]" class="form-control" placeholder="Tool name (e.g., Figma)">
+                          <select  name="tool[0][]" id="" class="select2 form-select form-select-lg">
+                            @foreach($tools as $tool)
+                              <option value="{{ $tool->id }}">{{ $tool->name }}</option>
+                            @endforeach
+                          </select>
                         </div>
                         <div class="col-md-4">
-                          <input type="text" name="tools[0][version]" class="form-control" placeholder="Version (optional)">
                         </div>
                         <div class="col-md-2">
                           <button type="button" class="btn btn-danger remove-tool"><i class="ti ti-trash"></i></button>
@@ -334,6 +341,20 @@
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
+              <div class="col-sm-6">
+                <label class="switch switch-info">
+                <input type="checkbox" class="switch-input" name="nda_agreement" id="nda_agreement_required_checkbox"/>
+                <span class="switch-toggle-slider">
+                  <span class="switch-on">
+                    <i class="ti ti-check"></i>
+                  </span>
+                    <span class="switch-off">
+                      <i class="ti ti-x"></i>
+                    </span>
+                  </span>
+                  <span class="switch-label">NDA Agreement</span>
+                </label>
+              </div>
               <div class="col-sm-12 ">
                 <label for="radius" class="form-label">Terms and Condition</label>
                 <textarea name="conditions" id="conditions" rows="4" cols="5" class="form-control summernote @error('conditions') is-invalid @enderror" placeholder="Conditions such as tools required, work hours, etc.">{{ old('conditions', $job->conditions ?? '') }}</textarea>
@@ -384,25 +405,7 @@ $(document).ready(function () {
 
       $('#selectpickerSelection').html('<option value="">Loading...</option>');
 
-      if (industryId) {
-        $.ajax({
-          url: '{{ route("get.skills.by.industry") }}',
-          type: 'GET',
-          data: { industry_id: industryId },
-          success: function (response) {
-            $('#selectpickerSelection').empty();
-            if (response.length > 0) {
-              $.each(response, function (key, skill) {
-                $('#selectpickerSelection').append('<option value="' + skill.id + '">' + skill.name + '</option>');
-              });
-            } else {
-              $('#selectpickerSelection').append('<option value="">No Skills Available</option>');
-            }
-          }
-        });
-      } else {
-        $('#selectpickerSelection').html('<option value="">-- Select Skill --</option>');
-      }
+    
   
       const endPicker = flatpickr("#deadline", {
         dateFormat: "Y-m-d",
@@ -421,13 +424,17 @@ $(document).ready(function () {
 
   let toolIndex = 1;
   let testIndex = 1; // Make sure this is defined somewhere globally
+  let testOptions = `@foreach($tests as $test)<option value="{{ $test->id }}">{{ $test->title }}</option>@endforeach`;
 
     $("#add-test").on('click', function() {
         const testHTML = `
             <div class="row g-3 test-row mb-2">
                 <div class="col-sm-5">
                     <label class="form-label" for="title">Test Title</label>
-                    <input type="text" name="test[${testIndex}][title]" class="form-control" placeholder="Title" />
+                    <select name="test[${testIndex}][]" class="select2 form-select form-select-lg">
+                      <option value="">Select Tests</option>
+                      ${testOptions}
+                    </select>
                 </div>
                 <div class="col-sm-5">
                     <label class="form-label" for="scoring_criteria">Scoring Criteria</label>
@@ -444,17 +451,21 @@ $(document).ready(function () {
     });
 
     let certificateIndex = 1; // Make sure this is defined somewhere globally
+    let certificateOptions = `@foreach($certificates as $certificate)<option value="{{ $certificate->id }}">{{ $certificate->name }}</option>@endforeach`;
 
     $("#add-certificate").on('click', function() {
         const certificateHTML = `
-            <div class="row g-3 certificate-row mb-2">
+    <div class="row g-3 certificate-row mb-2">
       <div class="col-sm-5">
         <label class="form-label" for="title">Certification Name</label>
-        <input type="text" name="certificate[${certificateIndex}][name]" class="form-control" placeholder="e.g. AWS Certified Developer" />
+       <select name="certificate[${certificateIndex}][]" class="select2 form-select form-select-lg">
+          <option value="">Select Certificates</option>
+          ${certificateOptions}
+        </select>
       </div>
       <div class="col-sm-5">
-        <label class="form-label" for="scoring_criteria">Issued By</label>
-        <input type="text" name="certificate[${certificateIndex}][issueby]" class="form-control" placeholder="e.g. Amazon, Coursera" />
+        <label class="form-label" for="scoring_criteria">Short Description</label>
+        <input type="text" name="certificate[${certificateIndex}][description]" class="form-control" placeholder="Short Desciption" />
       </div>
       <div class="col-sm-2 d-flex align-items-end">
         <button type="button" class="btn btn-danger remove-certificate">
@@ -477,15 +488,19 @@ $(document).ready(function () {
       $(this).closest('.certificate-row').remove();
     });
 
+    let toolOptions = `@foreach($tools as $tool)<option value="{{ $tool->id }}">{{ $tool->name }}</option>@endforeach`;
 
     $('#add-tool').on('click', function () {
       const toolHtml = `
         <div class="row g-3 tool-row mb-2">
           <div class="col-md-6">
-            <input type="text" name="tools[${toolIndex}][name]" class="form-control" placeholder="Tool name">
+           <select name="tool[${toolIndex}][]" class="select2 form-select form-select-lg">
+            <option value="">Select Certificates</option>
+            ${toolOptions}
+          </select>
           </div>
           <div class="col-md-4">
-            <input type="text" name="tools[${toolIndex}][version]" class="form-control" placeholder="Version (optional)">
+         
           </div>
           <div class="col-md-2">
             <button type="button" class="btn btn-danger remove-tool"><i class="ti ti-trash"></i></button>

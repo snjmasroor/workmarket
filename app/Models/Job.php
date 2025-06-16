@@ -85,5 +85,9 @@ class Job extends Model
                     ->withPivot('id', 'flags')
                     ->withTimestamps();
     }
+    public function certifications()
+    {
+        return $this->belongsToMany(Certification::class, 'job_certifications');
+    }
     
 }
