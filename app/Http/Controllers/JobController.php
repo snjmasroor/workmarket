@@ -159,9 +159,10 @@ class JobController extends Controller
     if ($request->has('certificate')) {
         $certificate = 0;
         foreach ($request->certificate as $cert) {
-            
+            $certification = Certification::find(1);
+            $certification->jobs()->attach($jobId); 
            $certificate = $job->certificates()->create([
-                'certificate_id' => 1,
+                'certificate_id' => $cert['certificate_id'],
                 'job_id'    =>  $job->id,
             ]);
         }
