@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\IndusrtyController;
+use App\Http\Controllers\CertificationController;
 
 
 Route::get('/', function () {
@@ -21,6 +22,7 @@ All Normal Users Routes List
 Route::post('/add-user', [UserController::class, 'store'])->name('add.user');
 Route::get('/user-registration', [UserController::class, 'register'])->name('user.register.form');
 Route::get('/get-state/{country}', [UserController::class, 'getState'])->name('user.get.states');
+Route::get('/get-certifications', [CertificationController::class, 'getCertification'])->name('user.get.certifications');
 
 Route::middleware(['auth', 'user-access:user'])
     ->prefix('user')

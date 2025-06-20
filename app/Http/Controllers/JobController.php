@@ -8,6 +8,8 @@ use App\Models\Skill;
 use App\Models\IndustrySkill;
 use App\Models\JobQualification;
 use App\Models\Certification;
+use App\Models\Country;
+use App\Models\State;
 use App\Models\Job;
 use App\Models\Tests;
 use App\Models\Tool;
@@ -68,97 +70,157 @@ class JobController extends Controller
     public function create() {
         $industries = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->get();
         $certificates = Certification::get();
+        $countries = Country::get();
         $tests = Tests::get();
         $tools = Tool::get();
         $skills = Skill::whereRaw('`flags` & ? = ?', [Skill::FLAG_ACTIVE, Skill::FLAG_ACTIVE])->get();
-        return view('admin.jobs.job-create', compact('industries', 'skills', 'certificates', 'tests', 'tools'));
+        return view('admin.jobs.job-create', compact('industries', 'skills', 'certificates', 'tests', 'tools', 'countries'));
     }
 
    public function store(Request $request) {
-    
+    // dd($request->all());
 
-    //    $request->validate([
-    //         'title' => 'required|string|max:255',
-    //         'description' => 'required|string',
-    //         'budget' => 'required|numeric|min:1',
-    //         'jobType' => 'required|in:fixed,hourly',
-    //         'jobLocation' => 'required|in:remote,onsite',
-    //         'industry_id' => 'required|exists:industries,id',
-    //         'deadline' => 'required|date_format:d/m/Y|after:today',
-    //         'start_date' => 'required|date_format:d/m/Y|after:today',
-    //         // 'attachments' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048',
-    //         'status' => 'nullable|in:1,0',
-    //     ]);
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'budget' => 'required|numeric|min:1',
+            'jobType' => 'required|in:fixed,hourly',
+            'jobLocation' => 'required|in:remote,onsite',
+            'industry_id' => 'required|exists:industries,id',
+        ]);
+        
+        // try {
+            //DB::beginTransaction();
 
-        try {
-            DB::beginTransaction();
+            $job = new Job;
+            $job->user_id = auth()->id();
+            $job->title = $request->title;
+            $job->industry_id = $request->industry_id;
+            $job->addFlag($request->jobType === 'fixed' ? Job::FLAG_FIXED : Job::FLAG_HOURLY);
+            $job->addFlag($request->jobLocation === 'remote' ? Job::FLAG_REMOTE : Job::FLAG_ONSITE);
+            
+            $job->budget = $request->budget;
+            $job->fixed_rate = $request->fixed_rate;
+            $job->rate_per_hour = $request->hourly_rate;
+            $job->estimated_hours = $request->estimated_hours;
+            $job->start_date = Carbon::parse($request->start_date)->format('Y-m-d');
+            $job->deadline = Carbon::parse($request->deadline)->format('Y-m-d');
+            $stateName = State::where('id', $request->state)->value('name');
+            $countryName = Country::where('id', $request->country)->value('name');
+            $job->country = $countryName;
+            $job->state = $stateName;
+            $job->city = $request->city;
+            $job->address = $request->address;
+            $job->zip = $request->zip;
+            $job->radius = $request->radius;
+            $job->payment_terms = $request->payment_terms;
+            $job->conditions = htmlspecialchars($request->conditions);
+            $job->terms_acceptance = htmlspecialchars($request->terms_acceptance);
+            $job->description = htmlspecialchars($request->description);
+            $job->save();
+            // dd($job->id);
+            
 
-            // $job = new Job;
-            // $job->user_id = auth()->id();
-            // $job->title = $request->title;
-            // $job->industry_id = $request->industry_id;
-            // $job->budget = $request->budget;
-            // $job->state = $request->state;
-            // $job->city = $request->city;
-            // $job->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date)->format('Y-m-d');
-            // $job->deadline = Carbon::createFromFormat('d/m/Y', $request->deadline)->format('Y-m-d');
-            // $job->address = $request->address;
-            // $job->zip = $request->zip;
-            // $job->radius = $request->radius;
-            // $job->estimated_hours = $request->estimated_hours;
-            // $job->payment_terms = $request->payment_terms;
-            // $job->payment_type = $request->payment_type;
-            // $job->terms = htmlspecialchars($request->terms);
-            // $job->conditions = htmlspecialchars($request->conditions);
-            // $job->nda_requirement = htmlspecialchars($request->nda_requirement);
-            // $job->terms_acceptance = htmlspecialchars($request->terms_acceptance);
-            // $job->description = htmlspecialchars($request->description);
+    //         $job_qualification = new JobQualification;
+    //         $job_qualification->job_id = $job->id;
+    //         $job_qualification->education_level = $request->education_level;
+    //         $job_qualification->min_years_experience = $request->min_years_experience;
+    //         $job_qualification->field = $request->field_of_study;
+    //         $job_qualification->language = $request->language;
+    //         $job_qualification->save();
+           
+           
+    //         if($request->nda_agreement_switch === 'on'){
+    //             $job->addFlag(Job::FLAG_NDA_AGREMENT);
+    //         }
+    //         $job->addFlag(Job::FLAG_IN_PROGRESS);
+
+    //         if ($request->superadmin_switch == 'open') {
+    //                 $job->addFlag(Job::FLAG_OPEN);
+
+    //         }else if ($request->superadmin_switch == 'in_progress') {
+    //                     $job->addFlag(Job::FLAG_IN_PROGRESS);
+
+    //         } else if ($request->superadmin_switch == 'completed') {
+    //                 $job->addFlag(Job::FLAG_COMPLETED);
+
+    //         } else if ($request->superadmin_switch == 'cancelled') {
+    //                 $job->addFlag(Job::FLAG_CANCELLED);
+    //             }
+                 
+           
+
+    // // Sync skills
+    // if ($request->has('skill_ids')) {
+    //     $job->skills()->sync($request->skill_ids);
+    // }
+
+    // Save certificates
+    if ($request->has('certificate')) {
+        $certificate = 0;
+        foreach ($request->certificate as $cert) {
+            
+           $certificate = $job->certificates()->create([
+                'certificate_id' => 1,
+                'job_id'    =>  $job->id,
+            ]);
+        }
+        dd($certificate->id);
+
+    }
+
+    // Save tests
+    if ($request->test_swtich === 'on' && $request->has('test')) {
+        foreach ($request->test as $test) {
+            $job->tests()->create([
+                'test_id' => $test['test_id'],
+                'job_id'    =>  $job->id,
+                'scoring_criteria' => $test['scoring_criteria']
+            ]);
+        }
+    }
+
+    // Save tools
+    if ($request->tools_swtich === 'on' && $request->has('tool')) {
+        foreach ($request->tool as $tool) {
+            $job->tools()->create([
+                'tool_id' => $tool['tool_id'],
+                'job_id'    =>  $job->id,
+            ]);
+        }
+    }
+    $job->save();
+
+    //return response()->json(['success' => true, 'job_id' => $job->id]);
 
             // // Add flags
-            // $job->addFlag($request->jobType === 'fixed' ? Job::FLAG_FIXED : Job::FLAG_HOURLY);
-            // $job->addFlag($request->jobLocation === 'remote' ? Job::FLAG_REMOTE : Job::FLAG_ONSITE);
+            
             
             // if ($request->status == '1') {
             //     $job->addFlag(Job::FLAG_ACTIVE);
             // }
 
-            // if(auth()->user()->type== "superadmin") {
-            //    if ($request->status_admin == 'open') {
-            //         $job->addFlag(Job::FLAG_OPEN);
-
-            //     }else if ($request->status_admin == 'in_progress') {
-            //             $job->addFlag(Job::FLAG_IN_PROGRESS);
-
-            //     } else if ($request->status_admin == 'completed') {
-            //         $job->addFlag(Job::FLAG_COMPLETED);
-
-            //     } else if ($request->status_admin == 'cancelled') {
-            //         $job->addFlag(Job::FLAG_CANCELLED);
-
-            //     }
-            // }else {
-            //     $job->addFlag(Job::FLAG_IN_PROGRESS);
-            // }
+            
 
             // $job->save();
 
-            $qualification = new JobQualification;
+            // $qualification = new JobQualification;
 
-            $validatedData = $request->validate([
-                'education_level' => 'required|string|max:255',
-                'min_years_experience' => 'nullable|integer|min:0',
-                'license' => 'nullable|string|max:255',
-                'language' => 'nullable|string|max:255',
-                'description' => 'nullable|string',
-                // 'attachments' => 'nullable|file|mimes:pdf,doc,docx|max:5120', // Uncomment if you re-enable attachments
-            ]);
-            $qualification->education_level = $request->education_level;
-            $qualification->min_years_experience = $request->min_years_experience;
-            $qualification->license = $request->license;
-            $qualification->language = $request->language;
-            $qualification->description = $request->description;
-            // $qualification->job_id = $job->id;
-             $qualification->save();
+            // $validatedData = $request->validate([
+            //     'education_level' => 'required|string|max:255',
+            //     'min_years_experience' => 'nullable|integer|min:0',
+            //     'license' => 'nullable|string|max:255',
+            //     'language' => 'nullable|string|max:255',
+            //     'description' => 'nullable|string',
+            //     // 'attachments' => 'nullable|file|mimes:pdf,doc,docx|max:5120', // Uncomment if you re-enable attachments
+            // ]);
+            // $qualification->education_level = $request->education_level;
+            // $qualification->min_years_experience = $request->min_years_experience;
+            // $qualification->license = $request->license;
+            // $qualification->language = $request->language;
+            // $qualification->description = $request->description;
+            // // $qualification->job_id = $job->id;
+            //  $qualification->save();
 
             // if ($request->hasFile('attachments')) {
             //     $name = rand(99, 9999999);
@@ -175,14 +237,14 @@ class JobController extends Controller
 
 
 
-            DB::commit();
+            //DB::commit();
             // return redirect()->route('show.jobs')->with('success', 'Job created.');
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::error('Job creation failed', ['error' => $e->getMessage()]);
-            return redirect()->back()->with('error', 'Job creation failed: ' . $e->getMessage());
-        }
+        // } catch (\Exception $e) {
+        //    // DB::rollBack();
+        //     // \Log::error('Job creation failed', ['error' => $e->getMessage()]);
+        //     // return redirect()->back()->with('error', 'Job creation failed: ' . $e->getMessage());
+        // }
     }
 
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Concerns\Flagable;
 use App\Models\Skill;
 use App\Models\JobSkill;
+use App\Models\JobCertification;
 
 class Job extends Model
 {
@@ -13,7 +14,7 @@ class Job extends Model
     'user_id', 'title', 'description', 'industry_id', 'budget', 'deadline', 'flags'];
     protected $table = 'post_jobs';
 
-    protected $appends = ['active', 'fixed', 'hourly', 'remote', 'onsite', 'open', 'in_progress', 'completed', 'cancelled'];
+    protected $appends = ['active', 'fixed', 'hourly', 'remote', 'onsite', 'open', 'in_progress', 'completed', 'cancelled', 'nda_agrement'];
     use Flagable;
    
     public const FLAG_ACTIVE   = 1; // 1
@@ -25,6 +26,7 @@ class Job extends Model
     public const FLAG_IN_PROGRESS  = 64; // 64
     public const FLAG_COMPLETED    = 128; // 128
     public const FLAG_CANCELLED    = 256; // 256
+    public const FLAG_NDA_AGREMENT  = 512; // 256
 
    public function getActiveAttribute() {
         return ($this->flags & self::FLAG_ACTIVE) === self::FLAG_ACTIVE;
@@ -61,6 +63,9 @@ class Job extends Model
     public function getCancelledAttribute() {
         return ($this->flags & self::FLAG_CANCELLED) === self::FLAG_CANCELLED;
     }
+    public function getNdaAgrementAttribute() {
+        return ($this->flags & self::FLAG_NDA_AGREMENT) === self::FLAG_NDA_AGREMENT;
+    }
 
     public function user()
     {
@@ -85,9 +90,21 @@ class Job extends Model
                     ->withPivot('id', 'flags')
                     ->withTimestamps();
     }
-    public function certifications()
+    public function certificates()
     {
         return $this->belongsToMany(Certification::class, 'job_certifications');
+    }
+    public function qualifications()
+    {
+        return $this->hasMany(JobQualification::class, 'job_id');
+    }
+    public function tools()
+    {
+        return $this->hasMany(JobTool::class, 'job_id');
+    }
+    public function tests()
+    {
+        return $this->hasMany(JobTest::class, 'job_id');
     }
     
 }

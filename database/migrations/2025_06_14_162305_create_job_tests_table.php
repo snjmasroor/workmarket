@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('job_tests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('job_id')->constrained('post_jobs')->onDelete('cascade');
-            $table->string('title'); // e.g., "Technical Skill Test"
+            $table->foreignId('test_id')->constrained('tests')->onDelete('cascade');
+            $table->string('title')->nullable(); // e.g., "Technical Skill Test"
             $table->text('description')->nullable(); // instructions
             $table->string('link')->nullable(); // test URL or platform
             $table->string('scoring_criteria')->nullable();
