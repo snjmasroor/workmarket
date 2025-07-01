@@ -52,7 +52,7 @@ use App\Http\Controllers\UserController;
         //edit jobs
         Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
         Route::put('/jobs/{job}/update', [JobController::class, 'update'])->name('jobs.update');
-        
+        Route::get('/view-jobs/{id}', [JobController::class, 'show'])->name('jobs.only.detail');
         
         // Job Specifications
         Route::get('/jobs/specifications', [JobSpacification::class, 'index'])->name('show.jobs.specifications');

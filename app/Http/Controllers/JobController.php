@@ -16,6 +16,7 @@ use App\Models\Tool;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 
 
@@ -69,17 +70,17 @@ class JobController extends Controller
 
     public function create() {
         $industries = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->get();
-        $certificates = Certification::get();
         $countries = Country::get();
         $tests = Tests::get();
-        $tools = Tool::get();
         $skills = Skill::whereRaw('`flags` & ? = ?', [Skill::FLAG_ACTIVE, Skill::FLAG_ACTIVE])->get();
-        return view('admin.jobs.job-create', compact('industries', 'skills', 'certificates', 'tests', 'tools', 'countries'));
+        return view('admin.jobs.job-create', compact('industries', 'skills', 'tests', 'countries'));
     }
 
    public function store(Request $request) {
-    // dd($request->all());
-
+    //  if($request->nda_agreement_switch == true)
+    //     return "asdasdasdasd";
+    
+    
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -89,26 +90,22 @@ class JobController extends Controller
             'industry_id' => 'required|exists:industries,id',
         ]);
         
-        // try {
-            //DB::beginTransaction();
-
+         try {
+            DB::beginTransaction();
+        
+            // Create the Job
             $job = new Job;
             $job->user_id = auth()->id();
             $job->title = $request->title;
             $job->industry_id = $request->industry_id;
-            $job->addFlag($request->jobType === 'fixed' ? Job::FLAG_FIXED : Job::FLAG_HOURLY);
-            $job->addFlag($request->jobLocation === 'remote' ? Job::FLAG_REMOTE : Job::FLAG_ONSITE);
-            
             $job->budget = $request->budget;
             $job->fixed_rate = $request->fixed_rate;
             $job->rate_per_hour = $request->hourly_rate;
             $job->estimated_hours = $request->estimated_hours;
             $job->start_date = Carbon::parse($request->start_date)->format('Y-m-d');
             $job->deadline = Carbon::parse($request->deadline)->format('Y-m-d');
-            $stateName = State::where('id', $request->state)->value('name');
-            $countryName = Country::where('id', $request->country)->value('name');
-            $job->country = $countryName;
-            $job->state = $stateName;
+            $job->country = Country::find($request->country_id)->name ?? null;
+            $job->state = State::find($request->state_id)->name ?? null;
             $job->city = $request->city;
             $job->address = $request->address;
             $job->zip = $request->zip;
@@ -117,135 +114,92 @@ class JobController extends Controller
             $job->conditions = htmlspecialchars($request->conditions);
             $job->terms_acceptance = htmlspecialchars($request->terms_acceptance);
             $job->description = htmlspecialchars($request->description);
+            $job->addFlag(Job::FLAG_ACTIVE);
+
+            // NDA & Admin Status
+            if ($request->nda_agreement_switch == true) {
+                Log::info('NDA switch is ON');
+                $job->addFlag(Job::FLAG_NDA_AGREMENT);                
+            }
+            if($request->jobType == 'fixed') {
+                $job->addFlag(Job::FLAG_FIXED);
+            }else {
+                $job->addFlag(Job::FLAG_HOURLY);
+            }
+            if($request->jobLocation == 'remote') {
+                $job->addFlag(Job::FLAG_REMOTE);
+            }else {
+                $job->addFlag(Job::FLAG_ONSITE);
+            }
+            switch ($request->superadmin_switch) {
+                case 'open':
+                    $job->addFlag(Job::FLAG_OPEN);
+                    break;
+                case 'in_progress':
+                    $job->addFlag(Job::FLAG_IN_PROGRESS);
+                    break;
+                case 'completed':
+                    $job->addFlag(Job::FLAG_COMPLETED);
+                    break;
+                case 'cancelled':
+                    $job->addFlag(Job::FLAG_CANCELLED);
+                    break;
+                default:
+                    $job->addFlag(Job::FLAG_IN_PROGRESS);
+            }
             $job->save();
-            // dd($job->id);
-            
-
-    //         $job_qualification = new JobQualification;
-    //         $job_qualification->job_id = $job->id;
-    //         $job_qualification->education_level = $request->education_level;
-    //         $job_qualification->min_years_experience = $request->min_years_experience;
-    //         $job_qualification->field = $request->field_of_study;
-    //         $job_qualification->language = $request->language;
-    //         $job_qualification->save();
-           
-           
-    //         if($request->nda_agreement_switch === 'on'){
-    //             $job->addFlag(Job::FLAG_NDA_AGREMENT);
-    //         }
-    //         $job->addFlag(Job::FLAG_IN_PROGRESS);
-
-    //         if ($request->superadmin_switch == 'open') {
-    //                 $job->addFlag(Job::FLAG_OPEN);
-
-    //         }else if ($request->superadmin_switch == 'in_progress') {
-    //                     $job->addFlag(Job::FLAG_IN_PROGRESS);
-
-    //         } else if ($request->superadmin_switch == 'completed') {
-    //                 $job->addFlag(Job::FLAG_COMPLETED);
-
-    //         } else if ($request->superadmin_switch == 'cancelled') {
-    //                 $job->addFlag(Job::FLAG_CANCELLED);
-    //             }
-                 
-           
-
-    // // Sync skills
-    // if ($request->has('skill_ids')) {
-    //     $job->skills()->sync($request->skill_ids);
-    // }
-
-    // Save certificates
-    if ($request->has('certificate')) {
-        $certificate = 0;
-        foreach ($request->certificate as $cert) {
-            $certification = Certification::find(1);
-            $certification->jobs()->attach($jobId); 
-           $certificate = $job->certificates()->create([
-                'certificate_id' => $cert['certificate_id'],
-                'job_id'    =>  $job->id,
+        
+        
+            // Add Job Qualifications
+            $job->qualifications()->create([
+                'education_level' => $request->education_level,
+                'min_years_experience' => $request->min_years_experience,
+                'field' => $request->field_of_study,
+                'language' => $request->language,
             ]);
-        }
-        dd($certificate->id);
-
-    }
-
-    // Save tests
-    if ($request->test_swtich === 'on' && $request->has('test')) {
-        foreach ($request->test as $test) {
-            $job->tests()->create([
-                'test_id' => $test['test_id'],
-                'job_id'    =>  $job->id,
-                'scoring_criteria' => $test['scoring_criteria']
+        
+            
+           
+            
+        
+            // Sync Skills
+            if ($request->filled('skill_ids')) {
+                $job->skills()->sync($request->skill_ids);
+            }
+        
+            // Sync Certifications
+            if ($request->filled('certifications')) {
+                $job->certifications()->sync($request->certifications);
+            }
+        
+            // Add Tests
+            if ($request->test_swtich === 'on' && $request->has('test')) {
+                foreach ($request->test as $test) {
+                    $job->tests()->create([
+                        'test_id' => $test['test_id'],
+                        'scoring_criteria' => $test['scoring_criteria'],
+                    ]);
+                }
+            }
+        
+            // Sync Tools
+            if ($request->tools_swtich === 'on' && $request->has('tools')) {
+                $job->tools()->sync($request->tools);
+            }
+        
+            DB::commit();
+        
+            return response()->json(['success' => true, 'job_id' => $job->id]);
+        
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Job creation failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
+        
+            return redirect()->back()->withInput()->with('error', 'Job creation failed. Please try again.');
         }
-    }
-
-    // Save tools
-    if ($request->tools_swtich === 'on' && $request->has('tool')) {
-        foreach ($request->tool as $tool) {
-            $job->tools()->create([
-                'tool_id' => $tool['tool_id'],
-                'job_id'    =>  $job->id,
-            ]);
-        }
-    }
-    $job->save();
-
-    //return response()->json(['success' => true, 'job_id' => $job->id]);
-
-            // // Add flags
-            
-            
-            // if ($request->status == '1') {
-            //     $job->addFlag(Job::FLAG_ACTIVE);
-            // }
-
-            
-
-            // $job->save();
-
-            // $qualification = new JobQualification;
-
-            // $validatedData = $request->validate([
-            //     'education_level' => 'required|string|max:255',
-            //     'min_years_experience' => 'nullable|integer|min:0',
-            //     'license' => 'nullable|string|max:255',
-            //     'language' => 'nullable|string|max:255',
-            //     'description' => 'nullable|string',
-            //     // 'attachments' => 'nullable|file|mimes:pdf,doc,docx|max:5120', // Uncomment if you re-enable attachments
-            // ]);
-            // $qualification->education_level = $request->education_level;
-            // $qualification->min_years_experience = $request->min_years_experience;
-            // $qualification->license = $request->license;
-            // $qualification->language = $request->language;
-            // $qualification->description = $request->description;
-            // // $qualification->job_id = $job->id;
-            //  $qualification->save();
-
-            // if ($request->hasFile('attachments')) {
-            //     $name = rand(99, 9999999);
-            //     $extension = $request->attachments->getClientOriginalExtension();
-            //     $fileNameToStore = $name . '.' . $extension;
-            //     $path = $request->attachments->storeAs("public/jobs/attachments/{$job->id}/", $fileNameToStore);
-            //     $job->attachments = "jobs/attachments/{$job->id}/{$fileNameToStore}";
-            //     $job->save();
-            // }
-
-            // if ($request->has('skill_ids')) {
-            //     $job->skills()->sync($request->skill_ids);
-            // }
-
-
-
-            //DB::commit();
-            // return redirect()->route('show.jobs')->with('success', 'Job created.');
-
-        // } catch (\Exception $e) {
-        //    // DB::rollBack();
-        //     // \Log::error('Job creation failed', ['error' => $e->getMessage()]);
-        //     // return redirect()->back()->with('error', 'Job creation failed: ' . $e->getMessage());
-        // }
     }
 
 
@@ -329,5 +283,35 @@ class JobController extends Controller
 
     return redirect()->route('show.jobs')->with('success', 'Job updated successfully.');
 }
+
+    public function data_api(Request $request)
+    {
+        $perPage = $request->input('per_page', 10);
+        $jobs = Job::query()
+            ->whereRaw('`flags` & ? = ?', [Job::FLAG_ACTIVE, Job::FLAG_ACTIVE])
+            ->whereRaw('`flags` & ? = ?', [Job::FLAG_OPEN, Job::FLAG_OPEN])
+            ->with('industry')
+            ->latest()
+            ->orderBy('id', 'desc')
+            ->paginate(10);
+
+        return response()->json($jobs);
+    }
+
+    public function show($id){
+        $job = Job::with([
+            'user',
+            'skills',
+            'tools',
+            'tests',
+            'qualifications',
+            'industry'
+        ])->find($id);
+    
+        if (!$job) {
+            abort(404, 'Job not found');
+        }
+        return view('user.jobs.detail', compact('job'));
+    }
 
 }

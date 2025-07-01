@@ -6,13 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class JobTool extends Model
 {
-    public function job()
+    public function jobs()
     {
-        return $this->belongsTo(Job::class, 'job_id');
+        return $this->belongsToMany(Job::class, 'job_tools');
     }
 
-    public function tool()
-    {
-        return $this->belongsTo(Tool::class, 'tool_id');
-    }
 }

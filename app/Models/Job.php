@@ -90,7 +90,7 @@ class Job extends Model
                     ->withPivot('id', 'flags')
                     ->withTimestamps();
     }
-    public function certificates()
+    public function certifications()
     {
         return $this->belongsToMany(Certification::class, 'job_certifications');
     }
@@ -100,7 +100,7 @@ class Job extends Model
     }
     public function tools()
     {
-        return $this->hasMany(JobTool::class, 'job_id');
+        return $this->belongsToMany(Tool::class, 'job_tools');
     }
     public function tests()
     {

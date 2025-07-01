@@ -51,11 +51,11 @@
             <div class="row g-6">
               <div class="col-sm-6">
                 <label class="form-label" for="jobTitle">Job Title</label>
-                <input type="text" name="title" id="jobTitle" class="form-control" placeholder="e.g PHP Developer" value="PHP Developer" />
+                <input type="text" name="title" id="jobTitle" class="form-control" placeholder="e.g PHP Developer"  />
               </div>
               <div class="col-sm-6">
                   <label for="industry_id" class="form-label">Industry <span class="text-danger">*</span></label>
-                  <select data-allow-clear="true" name="industry_id" id="industry_id" class="select2 form-select form-select-lg @error('industry_id') is-invalid @enderror" required>
+                  <select name="industry_id" id="industry_id" class="select2 form-select form-select-lg">
                     @foreach($industries as $industry)
                     <option value="{{ $industry->id }}">{{ $industry->name }}</option>
                     @endforeach
@@ -66,7 +66,7 @@
               </div>
               <div class="col-sm-6">
                 <label class="form-label" for="skill">Select Skills</label>
-                <select data-allow-clear="true" id="selectpickerSelection" class="select2 form-select form-select-lg" data-style="btn-default" name="skill_ids[]" multiple data-max-options="10">
+                <select id="selectpickerSelection" class="select2 form-select form-select-lg" data-style="btn-default" name="skill_ids[]" multiple data-max-options="10">
                   <option value="">Select Skills</option>
                 </select>
                 @error('skill_ids')
@@ -75,7 +75,7 @@
               </div>
               <div class="col-sm-6 ">
                 <label for="jobType" class="form-label">Job Type <span class="text-danger">*</span></label>
-                <select class="select2 form-select form-select-lg @error('jobType') is-invalid @enderror" name="jobType" id="jobType" value="fixed">
+                <select class="select2 form-select form-select-lg @error('jobType') is-invalid @enderror" name="jobType" id="jobType" >
                   <option value=''>Please select the Job Type</option>
                   <option value='fixed' >Fixed – One-time payment</option>
                   <option value="hourly" >Hourly – Pay based on time worked</option>
@@ -83,19 +83,19 @@
               </div>
               <div class="col-sm-6">
                 <label class="form-label" for="budget">Budget</label>
-                <input id="budget" type="number" step="0.01" name="budget" class="form-control" placeholder="e.g: 1 or 1.5" value="2000"/>
+                <input id="budget" type="number" step="0.01" name="budget" class="form-control" placeholder="e.g: 1 or 1.5"/>
               </div>
               <div class="col-sm-6" id="fixed-rate-fields">
                 <label class="form-label" for="fixed_rate">Fixed Amount</label>
-                <input type="number" step="0.01" id="fixed_rate" name="fixed_rate" class="form-control" placeholder="e.g 100, 100.50" value="1000"/>
+                <input type="number" step="0.01" id="fixed_rate" name="fixed_rate" class="form-control" placeholder="e.g 100, 100.50" />
               </div>
               <div class="col-sm-6" id="hourly-rate-fields">
                 <label class="form-label" for="hourly_rate">Hourly Rate</label>
-                <input type="number" step="0.01" id="hourly_rate" name="hourly_rate" class="form-control multi-steps-mobile" placeholder="e.g 100, 100.50"  value="100"/>
+                <input type="number" step="0.01" id="hourly_rate" name="hourly_rate" class="form-control multi-steps-mobile" placeholder="e.g 100, 100.50"  />
               </div>
               <div class="col-sm-6">
                 <label class="form-label" for="estimated_hours">Estimated Hours</label>
-                <input type="text" id="estimated_hours" name="estimated_hours" class="form-control" placeholder="Estimated Hours" maxlength="2" value="8" />
+                <input type="text" id="estimated_hours" name="estimated_hours" class="form-control" placeholder="Estimated Hours" maxlength="2"  />
               </div>
               <div class="col-sm-6">
                 <label class="form-label" for="start_date">Application Start Date</label>
@@ -127,22 +127,22 @@
               <div class="row g-6">
                 <div class="col-sm-6">
                   <label class="form-label" for="education_level">Minimum Qualification</label>
-                  <input type="text" name="education_level" id="education_level" class="form-control" placeholder="e.g. Bachelor's Degree, Diploma" value="Bachelor's Degree"/>
+                  <input type="text" name="education_level" id="education_level" class="form-control" placeholder="e.g. Bachelor's Degree, Diploma" />
                 </div>
                 
                 <div class="col-sm-6">
                   <label class="form-label" for="min_years_experience">Minimum Experience</label>
-                  <input type="number" step="0.01" name="min_years_experience" id="min_years_experience" class="form-control" placeholder="e.g. 2, 3.5, 5" value="5"/>
+                  <input type="number" step="0.01" name="min_years_experience" id="min_years_experience" class="form-control" placeholder="e.g. 2, 3.5, 5" />
                 </div>
                 
                 <div class="col-sm-6">
                   <label class="form-label" for="field_of_study">Field of Study</label>
-                  <input type="text" name="field_of_study" id="field_of_study" class="form-control" placeholder="e.g. Computer Science, Business, Engineering" value="Engineering"/>
+                  <input type="text" name="field_of_study" id="field_of_study" class="form-control" placeholder="e.g. Computer Science, Business, Engineering" />
                 </div>
                 
                 <div class="col-sm-6">
                   <label class="form-label" for="language">Language</label>
-                  <input type="text" name="language" id="language" class="form-control" placeholder="e.g. English, French, Chinese" value="English, French, Chinese"/>
+                  <input type="text" name="language" id="language" class="form-control" placeholder="e.g. English, French, Chinese" />
                 </div>
                
                 <div class="col-12 d-flex justify-content-between">
@@ -175,10 +175,12 @@
                   <span class="switch-label">Requirement for Certification?</span>
                 </label>
               </div>
-              <div class="row g-6" id="row_certification">
-                <div class="col-sm-12">
+              <div class="row g-6"  id="certificate_fields" style="display: none;">
+                <div class="col-sm-12" >
                   <label for="certificationSelect" class="form-label">Selection Certificates</label>
-                  <input id="certificationSelect" name="certifications" placeholder="Select Certifications" />
+                  <select multiple id="select_certificate" name="certifications[]" placeholder="Select Certifications">
+                   
+                  </select>
                 </div>
               </div>
                  <div class="col-sm-6">
@@ -195,6 +197,42 @@
                     <span class="switch-label">Requirement for Test?</span>
                   </label>
                 </div>
+                <div class="row" id="test_fields" style="display: none;">
+                  <div class="col-12">
+                      <div class="card shadow-sm rounded-3 p-4">
+                          <h5 class="card-title mb-3">Required Tests</h5>
+                          
+                          <div id="test-wrapper">
+                              <div class="row g-3 test-row mb-3 border p-3 rounded bg-light">
+                                  <div class="col-md-6">
+                                      <label class="form-label">Test Title</label>
+                                      <select name="test[0][test_id]" class="select2 form-select form-select-lg selectionTest">
+                                          <option value="0">-- Please Select Test --</option>
+                                          @foreach($tests as $test)
+                                              <option value="{{ $test->id }}">{{ $test->title }}</option>
+                                          @endforeach
+                                      </select>
+                                  </div>
+                                  <div class="col-md-4">
+                                      <label class="form-label">Scoring Criteria</label>
+                                      <input type="text" name="test[0][scoring_criteria]" class="form-control" placeholder="e.g., Minimum 80%">
+                                  </div>
+                                  <div class="col-md-2 d-flex align-items-end">
+                                      <button type="button" class="btn btn-outline-danger w-100 remove-test">
+                                          <i class="ti ti-trash"></i> Remove
+                                      </button>
+                                  </div>
+                              </div>
+                          </div>
+              
+                          <div class="d-flex justify-content-end">
+                              <button type="button" class="btn btn-primary mt-2" id="add-test">
+                                  <i class="ti ti-plus"></i> Add Another Test
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
                 <div class="col-sm-6">
                   <label class="switch switch-info">
                   <input type="checkbox" class="switch-input" name="tools_swtich" id="tools_required_checkbox" />
@@ -209,55 +247,14 @@
                     <span class="switch-label">Requirement for Tools?</span>
                   </label>
                 </div>
-                <div class="row g-6" id="test_fields" style="display: none;">
-                  <div class="mb-3">
-                    <label class="form-label">Required Test</label>
-                    <div id="test-wrapper">
-                      <div class="row g-3 test-row mb-2">
-                        <div class="col-md-6">
-                          <label class="form-label">Test Title</label>
-                          <select  name="test[0][test_id]" id="" class="select2 form-select form-select-lg">
-                            <option value="0">--Please Select Test--</option>
-                            @foreach($tests as $test)
-                              <option value="{{ $test->id }}">{{ $test->title }}</option>
-                            @endforeach
-                          </select>
-                        </div>
-                        <div class="col-md-4">
-                          <label class="form-label">Scoring Criteria</label>
-                          <input type="text" name="test[0][scoring_criteria]" class="form-control" placeholder="e.g., Minimum 80%">
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                          <button type="button" class="btn btn-danger remove-test"><i class="ti ti-trash"></i></button>
-                        </div>
-                      </div>
-                    </div>
-                    <button type="button" class="btn btn-primary mt-2" id="add-test">Add Another Test</button>
-                  </div>
-                 
-                </div>
+                
 
                 <div class="row g-6" id="tool_fields" style="display: none;">
-                  <div class="mb-3">
-                    <label class="form-label">Required Tools</label>
-                    <div id="tool-wrapper">
-                      <div class="row g-3 tool-row mb-2">
-                        <div class="col-md-6">
-                          <select  name="tool[0][tool_id]" id="" class="select2 form-select form-select-lg">
-                            @foreach($tools as $tool)
-                            <option value="0">--Please Select Tool--</option>
-                              <option value="{{ $tool->id }}">{{ $tool->name }}</option>
-                            @endforeach
-                          </select>
-                        </div>
-                        <div class="col-md-4">
-                        </div>
-                        <div class="col-md-2">
-                          <button type="button" class="btn btn-danger remove-tool"><i class="ti ti-trash"></i></button>
-                        </div>
-                      </div>
-                    </div>
-                    <button type="button" class="btn btn-primary" id="add-tool">Add Another Tool</button>
+                  <div class="col-sm-12" >
+                    <label for="toolsSelect" class="form-label">Selection Tools</label>
+                    <select multiple id="selectTools" name="tools[]" placeholder="Select Tools">
+                      
+                    </select>
                   </div>
                 </div>
               <div class="col-12 d-flex justify-content-between">
@@ -276,7 +273,8 @@
             <div class="row g-6">
               <div class="col-sm-6">
                 <label for="jobLocation" class="form-label">Job Location Type <span class="text-danger">*</span></label>
-                <select class="select2 form-select form-select-lg @error('jobLocation') is-invalid @enderror" name="jobLocation" id="jobLocation" value="onsite">
+                <select class="select2 form-select form-select-lg @error('jobLocation') is-invalid @enderror" name="jobLocation" id="jobLocation"
+                >
                   <option value='remote'>Remote – Work from anywhere</option>
                   <option value="onsite">On Site – Specific physical location</option>
                 </select>
@@ -301,24 +299,28 @@
               </div>
               <div class="col-sm-6">
                   <label for="state" class="form-label">City </label>
-                  <input type="text" id="city" name="city" class="form-control multi-steps-mobile" placeholder="e.g City" value="New York City"/>
+                  <input type="text" id="city" name="city" class="form-control multi-steps-mobile" placeholder="e.g City" 
+                  />
                   
               </div>
               <div class="col-sm-6 ">
                 <label for="address" class="form-label">Address</label>
-                <input type="text" name="address" id="address" class="form-control @error('address') is-invalid @enderror" placeholder="Full street address for job site" value="this is address of site job">
+                <input type="text" name="address" id="address" class="form-control @error('address') is-invalid @enderror" placeholder="Full street address for job site" 
+                >
                 @error('address')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
               </div>
               <div class="col-sm-6 ">
                   <label for="zip" class="form-label">Zip Code</label>
-                  <input type="text" name="zip" id="zip" class="form-control @error('zip') is-invalid @enderror" placeholder="e.g. 90001" value="90001">
+                  <input type="text" name="zip" id="zip" class="form-control @error('zip') is-invalid @enderror" placeholder="e.g. 90001" 
+                  >
                  
               </div>
               <div class="col-sm-6 ">
                 <label for="radius" class="form-label">Work Radius</label>
-                <input type="text" name="radius" id="radius" class="form-control @error('radius') is-invalid @enderror" placeholder="Max distance contractor can be from job" value="60">
+                <input type="text" name="radius" id="radius" class="form-control @error('radius') is-invalid @enderror" placeholder="Max distance contractor can be from job" 
+                >
               
               </div>
               <div class="col-sm-6 ">
@@ -331,17 +333,22 @@
               <div class="col-sm-12">
 
                 <label class="switch switch-info">
-                <input type="checkbox" class="switch-input" name="nda_agreement_switch" id="nda_agreement_required_checkbox"/>
-                <span class="switch-toggle-slider">
-                  <span class="switch-on">
-                    <i class="ti ti-check"></i>
-                  </span>
-                    <span class="switch-off">
-                      <i class="ti ti-x"></i>
-                    </span>
+                  <!-- This always sends 0 when checkbox is off -->
+                  <input type="hidden" name="nda_agreement_switch" value="0">
+              
+                  <!-- This overrides the value to 1 if checked -->
+                  <input type="checkbox" class="switch-input" name="nda_agreement_switch" id="nda_agreement_required_checkbox" value="1" />
+              
+                  <span class="switch-toggle-slider">
+                      <span class="switch-on">
+                          <i class="ti ti-check"></i>
+                      </span>
+                      <span class="switch-off">
+                          <i class="ti ti-x"></i>
+                      </span>
                   </span>
                   <span class="switch-label">NDA Agreement</span>
-                </label>
+              </label>
                 @if(auth()->user() && auth()->user()->type === 'superadmin')
                 <label class="switch switch-success">
                   <input type="radio" class="switch-input" name="superadmin_switch" id="open_required_checkbox" value="open"/>
@@ -467,64 +474,66 @@ $(document).ready(function () {
   endPicker = flatpickr("#deadline", {
     dateFormat: "Y-m-d"
   });
-  $('#certificationSelect').select2({
+  $('#select_certificate').select2({
         placeholder: 'Select Certifications', // <--- Change this line
         allowClear: true,
     });
 
     
-  var baseUrlCertification = "{{ route('user.get.certifications') }}";
-  var finalbasbaseUrlCertificationeUrl = baseUrlCertification;
-  var input = document.querySelector('#certificationSelect');
+  const finalbasbaseUrlCertificationeUrl = "{{ route('user.get.certifications') }}";
+  
+  let currentPage = 1;
 
-if (!input) return;
+function fetchCertifications(page = 1) {
+    fetch(`${finalbasbaseUrlCertificationeUrl}?page=${page}&per_page=100`)
+        .then(response => response.json())
+        .then(data => {
+          const select = document.getElementById('select_certificate');
+            select.innerHTML = ''; // Clear existing options
 
-var tagify = new Tagify(input, {
-  enforceWhitelist: true,
-  maxTags: 10,
-  dropdown: {
-    maxItems: 20,
-    enabled: 0,
-    closeOnSelect: false
-  },
-  templates: {
-    tag: function (tagData) {
-      return `
-        <tag title="${tagData.name}" contenteditable="false" spellcheck="false">
-          <x title="remove tag" class="tagify__tag__removeBtn"></x>
-          <div>
-            <span class="tagify__tag-text">${tagData.name}</span>
-          </div>
-        </tag>
-      `;
-    }
-  }
+            data.data.forEach(cert => {
+                const option = document.createElement('option');
+                option.value = cert.id;
+                option.text = cert.name;
+                select.appendChild(option);
+            }); // The actual certification items
+            console.log(data.current_page); // Current page number
+            console.log(data.last_page); // Total pages
+            // Now populate your frontend accordingly
+        });
+}
+
+$('#selectTools').select2({
+    placeholder: 'Select Tools', // <--- Change this line
+    allowClear: true,
 });
 
-// Load whitelist from Laravel
-$.ajax({
-  url: finalbasbaseUrlCertificationeUrl,
-  method: 'GET',
-  success: function (response) {
-    tagify.settings.whitelist = response;
-  },
-  error: function () {
-    console.error('Failed to load certifications.');
-  }
-});
-  // $.ajax({
-  //   url: finalbasbaseUrlCertificationeUrl,
-  //   method: 'GET',
-  //   success: function (data) {
-  //     var $certificationSelect = $('#certificationSelect');
-  //     $.each(data, function (index, certification) {
-  //       $certificationSelect.append('<option value="' + certification.id + '">' + certification.name + '</option>');
-  //     });
-  //   },
-  //   error: function () {
-  //     alert('Unable to fetch states. Please try again.');
-  //   }
-  // });
+    
+  const finalToolsURL = "{{ route('user.get.tools') }}";
+  
+
+function fetchTools(page = 1) {
+    fetch(`${finalToolsURL}?page=${page}&per_page=100`)
+        .then(response => response.json())
+        .then(data => {
+          const select = document.getElementById('selectTools');
+            select.innerHTML = ''; // Clear existing options
+
+            data.data.forEach(cert => {
+                const option = document.createElement('option');
+                option.value = cert.id;
+                option.text = cert.name;
+                select.appendChild(option);
+            }); // The actual certification items
+            console.log(data.current_page); // Current page number
+            console.log(data.last_page); // Total pages
+            // Now populate your frontend accordingly
+        });
+}
+
+fetchCertifications(); // Initial load
+fetchTools(); // Initial load
+ 
 
   $('#finalSubmit').on('click', function () {
         
@@ -547,51 +556,51 @@ $.ajax({
               },
               success: function (response) {
                 console.log(response);
-                // if (response.status == true) {
-                //     Swal.fire({
-                //         title: 'Success!',
-                //         text: response.message,
-                //         timer: 3000,
-                //         timerProgressBar: true,
-                //         toast: false,
-                //         icon: 'success'
-                //     }).then(() => {
-                //           $('#multiForm')[0].reset();
+                if (response.success == true) {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message,
+                        timer: 1500,
+                        timerProgressBar: true,
+                        toast: false,
+                        icon: 'success'
+                    }).then(() => {
+                          $('#multiForm')[0].reset();
 
-                //           setTimeout(function () {
-                //             location.reload();
-                //         }, 3000);
-                //       });
-                //     } else if (response.status !== true) {
-                //     // Laravel-level exception or manually returned error
-                //     let errorText = response.message;
-                //     if (response.error) {
-                //         errorText += `\n${response.error}`;
-                //     }
+                          setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                      });
+                    } else if (response.success !== true) {
+                    // Laravel-level exception or manually returned error
+                    let errorText = response.message;
+                    if (response.error) {
+                        errorText += `\n${response.error}`;
+                    }
 
-                //     Swal.fire({
-                //         title: 'Error',
-                //         text: errorText,
-                //         showConfirmButton: false,
-                //         icon: 'error'
-                //     });
-                // }
+                    Swal.fire({
+                        title: 'Error',
+                        text: errorText,
+                        showConfirmButton: false,
+                        icon: 'error'
+                    });
+                }
               },
               error: function (xhr, status, error) {
-                //   if (xhr.status === 422) {
-                //     let errors = xhr.responseJSON.errors;
-                //     let errorList = '';
-                //     $.each(errors, function (key, messages) {
-                //         errorList += `<li>${messages[0]}</li>`;
-                //     });
+                  if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorList = '';
+                    $.each(errors, function (key, messages) {
+                        errorList += `<li>${messages[0]}</li>`;
+                    });
 
-                //     Swal.fire({
-                //         title: 'Validation Failed',
-                //         showConfirmButton: false,
-                //         html: `<ul style="text-align:left;">${errorList}</ul>`,
-                //         icon: 'error'
-                //     });
-                // }
+                    Swal.fire({
+                        title: 'Validation Failed',
+                        showConfirmButton: false,
+                        html: `<ul style="text-align:left;">${errorList}</ul>`,
+                        icon: 'error'
+                    });
+                }
               }
           });
         });
@@ -625,109 +634,93 @@ $.ajax({
         });
     });
 
-      $('#selectpickerSelection').html('<option value="">Loading...</option>');
+
 
     
   
   
 
   let toolIndex = 1;
-  let testIndex = 1; // Make sure this is defined somewhere globally
-  let testOptions = `@foreach($tests as $test)<option value="{{ $test->id }}">{{ $test->title }}</option>@endforeach`;
+  let testIndex = 1;
 
-    $("#add-test").on('click', function() {
+let testOptions = `@foreach($tests as $test)<option value="{{ $test->id }}">{{ $test->title }}</option>@endforeach`;
+
+function getSelectedTestIds() {
+    const ids = [];
+    $('#test-wrapper .select2').each(function () {
+        const val = $(this).val();
+        if (val && val !== "0") {
+            ids.push(val);
+        }
+    });
+    return ids;
+}
+function generateFilteredTestOptions() {
+    const selectedIds = getSelectedTestIds();
+    let options = `<option value="0">-- Please Select Test --</option>`;
+    
+    @foreach($tests as $test)
+        if (!selectedIds.includes("{{ $test->id }}")) {
+            options += `<option value="{{ $test->id }}">{{ $test->title }}</option>`;
+        }
+    @endforeach
+
+    return options;
+}
+function initSelect2() {
+    $('#test-wrapper .select2').select2({
+        placeholder: "Select Tests",
+        allowClear: false,
+        width: '100%'
+    });
+}
+
+ initSelect2();
+
+    $("#add-test").on('click', function () {
+        const filteredOptions = generateFilteredTestOptions();
+
         const testHTML = `
-            <div class="row g-3 test-row mb-2">
-                <div class="col-sm-5">
-                    <label class="form-label" for="title">Test Title</label>
+            <div class="row g-3 test-row mb-3 border p-3 rounded bg-light">
+                <div class="col-md-6">
+                    <label class="form-label">Test Title</label>
                     <select name="test[${testIndex}][test_id]" class="select2 form-select form-select-lg">
-                      <option value="0">Select Tests</option>
-                      ${testOptions}
+                        ${filteredOptions}
                     </select>
                 </div>
-                <div class="col-sm-5">
-                    <label class="form-label" for="scoring_criteria">Scoring Criteria</label>
-                    <input type="text" name="test[${testIndex}][scoring_criteria]" class="form-control" placeholder="Criteria"/> 
+                <div class="col-md-4">
+                    <label class="form-label">Scoring Criteria</label>
+                    <input type="text" name="test[${testIndex}][scoring_criteria]" class="form-control" placeholder="e.g., Minimum 80%">
                 </div>
-                <div class="col-sm-2 d-flex align-items-end">
-                    <button type="button" class="btn btn-danger remove-test"><i class="ti ti-trash"></i></button>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="button" class="btn btn-outline-danger w-100 remove-test">
+                        <i class="ti ti-trash"></i> Remove
+                    </button>
                 </div>
             </div>
         `;
 
-        $('#test-wrapper').append(testHTML); 
+        $('#test-wrapper').append(testHTML);
+        initSelect2();
         testIndex++;
     });
 
-    let certificateIndex = 1; // Make sure this is defined somewhere globally
-    let certificateOptions = `@foreach($certificates as $certificate)<option value="{{ $certificate->id }}">{{ $certificate->name }}</option>@endforeach`;
-
-    $("#add-certificate").on('click', function() {
-        const certificateHTML = `
-    <div class="row g-3 certificate-row mb-2">
-      <div class="col-sm-5">
-        <label class="form-label" for="title">Certification Name</label>
-       <select name="certificate[${certificateIndex}][certificate_id]" class="select2 form-select form-select-lg">
-          <option value="0">Select Certificates</option>
-          ${certificateOptions}
-        </select>
-      </div>
-      <div class="col-sm-5">
-        <label class="form-label" for="scoring_criteria">Short Description</label>
-        <input type="text" name="certificate[${certificateIndex}][short_description]" class="form-control" placeholder="Short Desciption" />
-      </div>
-      <div class="col-sm-2 d-flex align-items-end">
-        <button type="button" class="btn btn-danger remove-certificate">
-          <i class="ti ti-trash"></i>
-        </button>
-      </div>
-    </div>
-        `;
-
-        $('#certificate-wrapper').append(certificateHTML); 
-        certificateIndex++;
-    });
-
-
+    // Remove test row and refresh options
     $(document).on('click', '.remove-test', function () {
-      $(this).closest('.test-row').remove();
+        $(this).closest('.test-row').remove();
     });
-
-    $(document).on('click', '.remove-certificate', function () {
-      $(this).closest('.certificate-row').remove();
+  
+    $('#industry_id').select2({
+        placeholder: "Select Industry",
+        width: '100%'
     });
-
-    let toolOptions = `@foreach($tools as $tool)<option value="{{ $tool->id }}">{{ $tool->name }}</option>@endforeach`;
-
-    $('#add-tool').on('click', function () {
-      const toolHtml = `
-        <div class="row g-3 tool-row mb-2">
-          <div class="col-md-6">
-           <select name="tool[${toolIndex}][tool_id]" class="select2 form-select form-select-lg">
-            <option value="0">Select tools</option>
-            ${toolOptions}
-          </select>
-          </div>
-          <div class="col-md-4">
-         
-          </div>
-          <div class="col-md-2">
-            <button type="button" class="btn btn-danger remove-tool"><i class="ti ti-trash"></i></button>
-          </div>
-        </div>
-      `;
-
-      $('#tool-wrapper').append(toolHtml);
-        toolIndex++;
-    
-        });
-      $(document).on('click', '.remove-tool', function () {
-        $(this).closest('.tool-row').remove();
-      });
-
-
+    $('#selectpickerSelection').select2({
+        placeholder: "Select Skills",
+        width: '100%'
+    });
     $('#industry_id').on('change', function () {
       var industryId = $(this).val();
+      
 
       $('#selectpickerSelection').html('<option value="">Loading...</option>');
 
@@ -755,6 +748,7 @@ $.ajax({
     
     $('#test_required_checkbox').on('change', function () {
       if ($(this).is(':checked')) {
+        
         $('#test_fields').slideDown();
       } else {
         $('#test_fields').slideUp();
@@ -768,6 +762,14 @@ $.ajax({
       }
     });
 
+    $('#certificate_required_checkbox').on('change', function () {
+      if ($(this).is(':checked')) {
+        $('#certificate_fields').slideDown();
+      } else {
+        $('#certificate_fields').slideUp();
+      }
+    });
+
   // Run once on page load (e.g. when editing a job)
   $('#test_required_checkbox').trigger('change');
   $('#tools_required_checkbox').trigger('change');
@@ -775,6 +777,19 @@ $.ajax({
 </script>
 <script>
    $(document).ready(function () {
+    $('#jobType').select2({
+        placeholder: "Select Job Type",
+        width: '100%'
+    });
+    $('#jobLocation').select2({
+        placeholder: "Select Job Location Type",
+        width: '100%'
+    });
+    $('#country').select2({
+        placeholder: "Select Country",
+        width: '100%'
+    });
+    
     $('#jobType').on('change', function () {
         if ($(this).val() === 'hourly') {
             $('#hourly-rate-fields').show();
