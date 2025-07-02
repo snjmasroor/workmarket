@@ -106,5 +106,9 @@ class Job extends Model
     {
         return $this->hasMany(JobTest::class, 'job_id');
     }
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
     
 }

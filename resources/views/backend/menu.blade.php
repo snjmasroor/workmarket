@@ -113,7 +113,7 @@
                       <div data-i18n="Job">Jobs</div>
                     </a>
                     <ul class="menu-sub">
-                      <li class="menu-item">
+                      <li class="menu-item {{ request()->routeIs('admin.jobs.show') ? 'active' : '' }}">
                         <a href="{{route('admin.jobs.show')}}" class="menu-link">
                           <i class="menu-icon tf-icons ti ti-files"></i>
                           <div data-i18n="Job">Jobs</div>
@@ -252,12 +252,12 @@
                       <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                           <i class="menu-icon tf-icons ti ti-lock"></i>
-                          <div data-i18n="Authentications">Authentications</div>
+                          <div data-i18n="Job Applications">Job Applications</div>
                         </a>
                         <ul class="menu-sub">
-                          <li class="menu-item">
-                            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                              <div data-i18n="Login">Login</div>
+                          <li class="menu-item {{ request()->routeIs('admin.jobs.application.process') ? 'active' : '' }}">
+                            <a href="{{ route('admin.jobs.application.process') }}" class="menu-link">
+                              <div data-i18n="Process">Process</div>
                             </a>
                             <ul class="menu-sub">
                               <li class="menu-item">

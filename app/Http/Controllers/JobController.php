@@ -10,6 +10,7 @@ use App\Models\JobQualification;
 use App\Models\Certification;
 use App\Models\Country;
 use App\Models\State;
+use App\Models\JobApplication;
 use App\Models\Job;
 use App\Models\Tests;
 use App\Models\Tool;
@@ -312,6 +313,38 @@ class JobController extends Controller
             abort(404, 'Job not found');
         }
         return view('user.jobs.detail', compact('job'));
+    }
+
+    public function apply(Request $request, $id)
+    {
+        $job = Job::findOrFail($id);
+        // $job = Job::find($id);
+
+        if (!$job) {
+            return response()->json(['status' => 'error', 'message' => 'Job not found'], 404);
+        }
+    
+        if ($job->open !== true) {
+            return response()->json(['status' => 'error', 'message' => 'Job is not open'], 403);
+        }
+    
+        $alreadyApplied = JobApplication::where('user_id', $request->user()->id)
+            ->where('job_id', $id)
+            ->exists();
+    
+        if ($alreadyApplied) {
+            return response()->json(['status' => 'error', 'message' => 'Already applied'], 409);
+        }
+    
+        $application = new JobApplication();
+        $application->user_id = $request->user()->id;
+        $application->job_id = $id;
+        // $application->addFlag(JobApplication::FLAG_ACTIVE);
+        $application->addFlag(JobApplication::FLAG_PENDING);
+        // $application->cover_letter = $request->cover_letter; // uncomment if needed
+        $application->save();
+    
+        return response()->json(['status' => 'success', 'message' => 'Application submitted']);
     }
 
 }

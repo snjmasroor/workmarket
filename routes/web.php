@@ -36,6 +36,7 @@ Route::middleware(['auth', 'user-access:user'])
     Route::get('/view-jobs', [UserController::class, 'view_jobs'])->name('user.viewJobs');
     Route::get('/view-jobs-data', [JobController::class, 'data_api'])->name('user.data.all.jobs');
     Route::get('/view-jobs/{id}', [JobController::class, 'show'])->name('user.job.only');
+    Route::post('/job/apply/{id}', [JobController::class, 'apply'])->name('user.job.apply');
 });
   
 /*------------------------------------------

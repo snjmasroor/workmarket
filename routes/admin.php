@@ -7,6 +7,7 @@ use App\Http\Controllers\IndustrySkillController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobSpacification;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\JobApplicationController;
 
 
   Route::middleware(['auth', 'user-access:admin,superadmin'])->prefix('admin')->group(function () {
@@ -49,11 +50,16 @@ use App\Http\Controllers\UserController;
         Route::get('/jobs', [JobController::class, 'index'])->name('admin.jobs.show');
         Route::get('/jobs/data', [JobController::class, 'data'])->name('admin.jobs.data');
         Route::post('/jobs/store', [JobController::class, 'store'])->name('job.store');
+        
         //edit jobs
         Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
         Route::put('/jobs/{job}/update', [JobController::class, 'update'])->name('jobs.update');
         Route::get('/view-jobs/{id}', [JobController::class, 'show'])->name('jobs.only.detail');
         
+        // Job applications routes
+        Route::get('/jobs/application/process', [JobApplicationController::class, 'process'])->name('admin.jobs.application.process');
+        Route::get('/jobs/application/process/data', [JobApplicationController::class, 'getApplicationsForAdmin'])->name('admin.jobs.application.process.data');
+        Route::post('/admin/applications/hire/{id}', [JobApplicationController::class, 'hireApplicant'])->name('admin.applications.hire');
         // Job Specifications
         Route::get('/jobs/specifications', [JobSpacification::class, 'index'])->name('show.jobs.specifications');
         
