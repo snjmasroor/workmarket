@@ -37,22 +37,32 @@ class JobApplicationController extends Controller
             })
             ->addColumn('action', function ($row) {
                 $hireUrl = route('admin.applications.hire', $row->id);
+                $contractUrl = route('admin.contracts.create', $row->id);
+                
                 $viewUrl = "";//route('admin.jobs.', $row->job_id);
 
-                return '
+                $dropdown = '
                     <div class="dropdown">
                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                             <i class="ti ti-dots-vertical"></i>
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="'.$viewUrl.'"><i class="ti ti-eye me-1"></i> View Job</a>
-                            <form method="POST" action="'.$hireUrl.'">
-                               <button class="btn btn-sm btn-success btn-hire" data-url="'.$hireUrl.'">
-                                    <i class="ti ti-user-check me-1"></i> Hire
-                                </button>
-                            </form>
+                            <a class="dropdown-item" href="'.$viewUrl.'"><i class="ti ti-eye me-1"></i> View Job</a>';
+
+                // ✅ Conditional: Only show contract link if accepted
+                if ($row->accepted) {
+                    $dropdown .= '<a class="dropdown-item" href="'.$contractUrl.'"><i class="ti ti-file-text me-1"></i> Create Contract</a>';
+                }
+
+                // ✅ Hire button (use JS handler, not form submit)
+                $dropdown .= '
+                            <button type="button" class="dropdown-item btn-hire" data-url="'.$hireUrl.'">
+                                <i class="ti ti-user-check me-1"></i> Hire
+                            </button>
                         </div>
                     </div>';
+
+                return $dropdown;
             })
             ->rawColumns(['flags', 'action']) // Allow HTML badges and dropdown
             ->make(true);

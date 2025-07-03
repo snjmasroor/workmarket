@@ -105,5 +105,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(JobApplication::class);
     }
+    public function contractsAsAdmin()
+    {
+        return $this->hasMany(Contract::class, 'admin_id');
+    }
+
+    public function contractsAsUser()
+    {
+        return $this->hasMany(Contract::class, 'user_id');
+    }
 
 }

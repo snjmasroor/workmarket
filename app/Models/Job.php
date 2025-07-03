@@ -110,5 +110,9 @@ class Job extends Model
     {
         return $this->hasMany(JobApplication::class);
     }
+    public function contracts()
+    {
+        return $this->hasMany(Contract::class, 'job_id');
+    }
     
 }

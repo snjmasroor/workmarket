@@ -8,6 +8,7 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\JobSpacification;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\JobApplicationController;
+use App\Http\Controllers\ContractController;
 
 
   Route::middleware(['auth', 'user-access:admin,superadmin'])->prefix('admin')->group(function () {
@@ -60,6 +61,10 @@ use App\Http\Controllers\JobApplicationController;
         Route::get('/jobs/application/process', [JobApplicationController::class, 'process'])->name('admin.jobs.application.process');
         Route::get('/jobs/application/process/data', [JobApplicationController::class, 'getApplicationsForAdmin'])->name('admin.jobs.application.process.data');
         Route::post('/admin/applications/hire/{id}', [JobApplicationController::class, 'hireApplicant'])->name('admin.applications.hire');
+        
+        Route::get('/admin/contracts/create/{id}', [ContractController::class, 'create'])->name('admin.contracts.create');
+        Route::post('/admin/contracts/store', [ContractController::class, 'store'])->name('admin.contracts.store');
+        
         // Job Specifications
         Route::get('/jobs/specifications', [JobSpacification::class, 'index'])->name('show.jobs.specifications');
         
