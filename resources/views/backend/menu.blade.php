@@ -259,22 +259,10 @@
                             <a href="{{ route('admin.jobs.application.process') }}" class="menu-link">
                               <div data-i18n="Process">Process</div>
                             </a>
-                            <ul class="menu-sub">
-                              <li class="menu-item">
-                                <a href="auth-login-basic.html" class="menu-link" target="_blank">
-                                  <div data-i18n="Basic">Basic</div>
-                                </a>
-                              </li>
-                              <li class="menu-item">
-                                <a href="auth-login-cover.html" class="menu-link" target="_blank">
-                                  <div data-i18n="Cover">Cover</div>
-                                </a>
-                              </li>
-                            </ul>
                           </li>
-                          <li class="menu-item">
-                            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                              <div data-i18n="Register">Register</div>
+                          <li class="menu-item {{ request()->routeIs('admin.jobs.contract') ? 'active' : '' }}">
+                            <a href="{{ route('admin.jobs.contract') }}" class="menu-link">
+                              <div data-i18n="Contracts">Contracts</div>
                             </a>
                             <ul class="menu-sub">
                               <li class="menu-item">
@@ -873,8 +861,8 @@
                   </li>
 
                   <!-- Layouts -->
-                  <li class="menu-item">
-                    <a href="javascript:void(0)" class="menu-link">
+                  <li class="menu-item {{ request()->routeIs('user.recuitments.view') ? 'active' : '' }}">
+                    <a href="{{ route('user.recuitments.view') }}" class="menu-link">
                       <i class="menu-icon tf-icons ti ti-user"></i>
                       <div data-i18n="Recruitment">Recruitments</div>
                     </a>

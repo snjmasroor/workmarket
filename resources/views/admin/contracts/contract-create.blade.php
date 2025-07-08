@@ -1,59 +1,59 @@
 @extends('layouts.backend.master') 
 @push('styles')
+<style>
+    .form-label {
+        font-weight: 500;
+    }
+    .form-control, textarea {
+        border-radius: 0.375rem;
+    }
+</style>
 @endpush
 @section('page-content')
 <div class="row justify-content-center mt-5">
-  <div class="col-md-6">
-    <div class="card shadow-sm">
-      <div class="card-header text-center">
-        <h5 class="mb-0">Add Contract</h5>
-        <small class="text-muted">Contract Form</small>
+  <div class="col-md-8">
+      <div class="card shadow-lg border-0">
+          <div class="card-header text-center  text-white">
+              <h5 class="mb-0">Create Contract</h5>
+              <small class="text-light">Fill the details below</small>
+          </div>
+          <div class="card-body px-4">
+              <form id="contractForm" action="{{ route('admin.contracts.store') }}" method="POST">
+                  @csrf
+
+                  <input type="hidden" name="job_application_id" value="{{ $application->id }}">
+                  <input type="hidden" name="user_id" value="{{ $application->user_id }}">
+                  <input type="hidden" name="job_id" value="{{ $application->job_id }}">
+
+                  <div class="mb-4">
+                      <label for="terms" class="form-label">Contract Terms</label>
+                      <textarea id="terms" name="terms" class="form-control" rows="5" required></textarea>
+                  </div>
+
+                  <div class="mb-4">
+                      <label for="amount" class="form-label">Amount (USD)</label>
+                      <input type="number" id="amount" name="amount" class="form-control" step="0.01" required>
+                  </div>
+
+                  <div class="mb-4">
+                      <label for="start_date" class="form-label">Start Date</label>
+                      <input type="date" id="start_date" name="start_date" class="form-control" required>
+                  </div>
+
+                  <div class="mb-4">
+                      <label for="end_date" class="form-label">End Date</label>
+                      <input type="date" id="end_date" name="end_date" class="form-control">
+                  </div>
+
+                  <div class="text-end">
+                      <button type="submit" id="finalSubmit" class="btn btn-success">
+                          <i class="bi bi-file-earmark-plus"></i> Create Contract
+                      </button>
+                  </div>
+
+              </form>
+          </div>
       </div>
-      <div class="card-body">
-            <form id="contractForm" action="{{ route('admin.contracts.store') }}" method="POST">
-          @csrf
-
-            <input type="hidden" id="job_application_id" name="job_application_id" value="{{ $application->id }}">
-            <input type="hidden" id="user_id" name="user_id" value="{{ $application->user_id }}">
-            <input type="hidden" id="job_id" name="job_id" value="{{ $application->job_id }}">
-
-          <div class="mb-3 row">
-            <label for="industry-name" class="col-sm-3 col-form-label">Contract Terms</label>
-            <div class="col-sm-9">
-              <textarea id="terms" id="terms" name="terms" class="form-control" required></textarea>
-            </div>
-          </div>
-
-          <div class="mb-3 row">
-            <label class="col-sm-3 col-form-label">Amount</label>
-            <div class="col-sm-9">            
-                  <input type="number" id="amount" name="amount" class="form-control" step="0.01" required>
-            </div>
-          </div>
-          
-          <div class="mb-3 row">
-            <label class="col-sm-3 col-form-label">Start Date</label>
-            <div class="col-sm-9">            
-                  <input type="date" id="start_date" name="start_date" class="form-control" required>
-            </div>
-          </div>
-
-          <div class="mb-3 row">
-            <label class="col-sm-3 col-form-label">End Date</label>
-            <div class="col-sm-9">            
-                  <input type="date" id="end_date" name="end_date" class="form-control">
-            </div>
-          </div>
-
-          <div class="row justify-content-end">
-            <div class="col-sm-9 offset-sm-3">
-                  <button type="submit" id="finalSubmit" class="btn btn-primary">Create Contract</button>
-            </div>
-          </div>
-
-        </form>
-      </div>
-    </div>
   </div>
 </div>
 @endsection 

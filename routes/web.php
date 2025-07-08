@@ -8,6 +8,7 @@ use App\Http\Controllers\IndusrtyController;
 use App\Http\Controllers\CertificationController;
 use App\Http\Controllers\ToolController;
 use App\Http\Controllers\JobController;
+use App\Http\Controllers\RecuitmentController;
 
 
 Route::get('/', function () {
@@ -37,6 +38,12 @@ Route::middleware(['auth', 'user-access:user'])
     Route::get('/view-jobs-data', [JobController::class, 'data_api'])->name('user.data.all.jobs');
     Route::get('/view-jobs/{id}', [JobController::class, 'show'])->name('user.job.only');
     Route::post('/job/apply/{id}', [JobController::class, 'apply'])->name('user.job.apply');
+
+
+    Route::get('/view-recuitment', [RecuitmentController::class, 'view_recuitment'])->name('user.recuitments.view');
+    Route::get('/view-contracts/{id}', [RecuitmentController::class, 'view_contract'])->name('user.contracts.view');
+    Route::put('/contracts/{id}/respond', [RecuitmentController::class, 'respond'])->name('user.contracts.respond');
+
 });
   
 /*------------------------------------------

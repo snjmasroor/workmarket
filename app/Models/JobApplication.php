@@ -9,12 +9,17 @@ class JobApplication extends Model
 {
     use Flagable;
 
-    protected $appends = ['active', 'pending', 'accepted', 'rejected'];
+    protected $appends = ['active', 'pending', 'accepted', 'rejected', 'contract_send'];
 
     public const FLAG_ACTIVE = 1;
     public const FLAG_PENDING = 2;
     public const FLAG_ACCEPTED = 4;
     public const FLAG_REJECTED = 8;
+    public const FLAG_CONTRACT_SEND = 16;
+
+    public function getContractSendAttribute() {
+        return ($this->flags & self::FLAG_CONTRACT_SEND) == self::FLAG_CONTRACT_SEND;
+    }
 
     public function getActiveAttribute() {
         return ($this->flags & self::FLAG_ACTIVE) == self::FLAG_ACTIVE;

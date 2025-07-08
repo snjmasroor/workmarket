@@ -38,6 +38,7 @@ class JobApplicationController extends Controller
             ->addColumn('action', function ($row) {
                 $hireUrl = route('admin.applications.hire', $row->id);
                 $contractUrl = route('admin.contracts.create', $row->id);
+                $checkcontractUrl = route('admin.contracts.show', $row->id);
                 
                 $viewUrl = "";//route('admin.jobs.', $row->job_id);
 
@@ -51,7 +52,12 @@ class JobApplicationController extends Controller
 
                 // ✅ Conditional: Only show contract link if accepted
                 if ($row->accepted) {
-                    $dropdown .= '<a class="dropdown-item" href="'.$contractUrl.'"><i class="ti ti-file-text me-1"></i> Create Contract</a>';
+                    if ($row->contract_send) {
+                        $dropdown .= '<a class="dropdown-item" href="'.$checkcontractUrl.'"><i class="ti ti-eye me-1"></i> View Contract</a>';
+                        
+                    }else {
+                        $dropdown .= '<a class="dropdown-item" href="'.$contractUrl.'"><i class="ti ti-file-text me-1"></i> Create Contract</a>';
+                    }
                 }
 
                 // ✅ Hire button (use JS handler, not form submit)

@@ -7,124 +7,62 @@
     <link rel="stylesheet" href="{{asset('assets/vendor/libs/typeahead-js/typeahead.css')}}" />
 @endpush @section('page-content') 
 
-               <div class="container py-5">
-        <!-- Use d-flex and justify-content-center on the row to center the column -->
-        <div class="row justify-content-center">
-            <!-- You can adjust the column size (e.g., col-md-6) to control the width of the card -->
-            <div class="col-md-6">
-                <div class="card card-action mb-6">
-                    <div class="card-header">
-                        <h5 class="card-action-title mb-0">Add Industry Skills</h5>
-                        <div class="card-action-element">
-                            <ul class="list-inline mb-0">
-                                <li class="list-inline-item">
-                                    <a href="javascript:void(0);" class="card-expand">
-                                        <i class="tf-icons ti ti-arrows-maximize ti-sm"></i>
-                                    </a>
-                                </li>
-                            </ul>
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-header text-center bg-warning text-white">
+                <h5 class="mb-0">Add Industry Skill</h5>
+                <small class="text-light">Associate multiple skills with an industry</small>
+            </div>
+
+            <div class="card-body px-4 py-4">
+                <form action="{{ route('industry-skill.store') }}" method="POST">
+                    @csrf
+
+                    <div class="mb-4">
+                        <label for="industry_id" class="form-label fw-semibold">Select Industry</label>
+                        <select id="industry_id" name="industry_id" class="form-select select2" required>
+                            <option value="">-- Select Industry --</option>
+                            @foreach($industries as $industry)
+                                <option value="{{ $industry->id }}">{{ $industry->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="skill_ids" class="form-label fw-semibold">Select Skills</label>
+                        <select multiple name="skill_ids[]" id="skill_ids" class="form-select select2" required>
+                            @foreach($skills as $skill)
+                                <option value="{{ $skill->id }}">{{ $skill->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Status</label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="status" id="active1" value="1" checked>
+                                <label class="form-check-label" for="active1">Active</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="status" id="active0" value="0">
+                                <label class="form-check-label" for="active0">Inactive</label>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="card-body">
-                        <!-- Removed redundant d-flex align-items-center around the form -->
-                        <form action="{{route('industry-skill.store')}}" method="post">
-                             @csrf  
-                            <div class="mb-3">
-                                <label for="select2Basic" class="form-label">Basic</label>
-                                <select id="select2Basic" name="industry_id" class="select2 form-select form-select-lg"   data-allow-clear="true">
-                                     <option value="">-- Select Industry --</option>
-                                        @foreach($industries as $industry)
-                                                <option value="{{ $industry->id }}">{{ $industry->name }}</option>
-                                        @endforeach
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                    <select multiple name="skill_ids[]" id="select2Basic2" class="select2 form-select form-select-lg"   data-allow-clear="true">
-                                   <option value="">-- Select Skill --</option>
-                                    @foreach($skills as $skill)
-                                        <option value="{{ $skill->id }}">{{ $skill->name }}</option>
-                                    @endforeach
-                                    </select>
-                            </div>
-                            <div class="mb-3 row">
-                                <label class="col-sm-3 col-form-label">Status</label>
-                                <div class="col-sm-9 d-flex align-items-center">
-                                    <div class="form-check me-3">
-                                        <input class="form-check-input" type="radio" name="status" id="active1" value="1" checked>
-                                        <label class="form-check-label" for="active1">Active</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="status" id="active0" value="0">
-                                        <label class="form-check-label" for="active0">Inactive</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Create Industry Skills</button>
-                        </form>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-plus-circle me-1"></i> Create Industry Skills
+                        </button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
- {{-- <div class="content">
-                <div class="row">
-                    <div class="col-lg-8 offset-lg-2">
-                        <h4 class="page-title">Add Industry Skills</h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-8 offset-lg-2">
-                        <form action="{{route('industry-skill.store')}}" method="post">
-                        @csrf    
-                        <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-										<label>Industry</label>
-										 <select name="industry_id" class="form-control" required>
-                                            <option value="">-- Select Industry --</option>
-                                            @foreach($industries as $industry)
-                                                <option value="{{ $industry->id }}">{{ $industry->name }}</option>
-                                            @endforeach
-                                        </select>
-									</div>
-                                </div>
-                                <div class="col-md-6">
-									<div class="form-group">
-										<label>Skills</label>
-										<select class="select" multiple name="skill_ids[]">
-											<option value="">-- Select Skill --</option>
-                                                @foreach($skills as $skill)
-                                                    <option value="{{ $skill->id }}">{{ $skill->name }}</option>
-                                                @endforeach
-										</select>
-									</div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="display-block">Schedule Status</label>
-								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="status" id="product_active" value=1 checked>
-									<label class="form-check-label" for="product_active">
-									Active
-									</label>
-								</div>
-								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="status" id="product_inactive" value=0>
-									<label class="form-check-label" for="product_inactive">
-									Inactive
-									</label>
-								</div>
-                            </div>
-                            <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn">Create Industry Skills</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div> --}}
-
-            @endsection
+</div>
+@endsection
 @push('scripts') 
 <script src="{{asset('assets/js/cards-actions.js')}}"></script>
     <script src="{{asset('assets/vendor/libs/block-ui/block-ui.js')}}"></script>

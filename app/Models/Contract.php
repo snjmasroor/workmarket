@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Concerns\Flagable;
 class Contract extends Model
 {
-    protected $appends = ['active', 'pending', 'completed', 'cancelled'];
+    protected $appends = ['active', 'pending', 'completed', 'cancelled', 'accepted'];
     use Flagable;
 
     public const FLAG_ACTIVE = 1;
     public const FLAG_PENDING = 2;
     public const FLAG_COMPLETED = 4;
     public const FLAG_CANCELLED = 8;
+    public const FLAG_ACCEPTED = 16;
     
     protected $fillable = [
         'admin_id',
@@ -25,6 +26,9 @@ class Contract extends Model
         'end_date',
     ];
     
+    public function getAcceptedAttribute() {
+        return ($this->flags & self::FLAG_ACCEPTED) == self::FLAG_ACCEPTED;
+    }
     public function getActiveAttribute() {
         return ($this->flags & self::FLAG_ACTIVE) == self::FLAG_ACTIVE;
     }

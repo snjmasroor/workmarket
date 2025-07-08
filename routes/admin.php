@@ -64,7 +64,12 @@ use App\Http\Controllers\ContractController;
         
         Route::get('/admin/contracts/create/{id}', [ContractController::class, 'create'])->name('admin.contracts.create');
         Route::post('/admin/contracts/store', [ContractController::class, 'store'])->name('admin.contracts.store');
-        
+        Route::get('/contracts/view/{id}', [ContractController::class, 'show'])->name('admin.contracts.show');
+
+        Route::get('/admin/contracts', [ContractController::class, 'contracts'])->name('admin.jobs.contract');
+        Route::get('/contracts/data', [ContractController::class, 'data'])->name('admin.jobs.contract.data');
+        Route::get('/contracts/{id}/edit', [ContractController::class, 'edit'])->name('admin.jobs.contract.edit');
+        Route::put('/contracts/update/{id}', [ContractController::class, 'update'])->name('admin.jobs.contract.update');
         // Job Specifications
         Route::get('/jobs/specifications', [JobSpacification::class, 'index'])->name('show.jobs.specifications');
         
