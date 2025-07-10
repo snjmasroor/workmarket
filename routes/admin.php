@@ -9,9 +9,13 @@ use App\Http\Controllers\JobSpacification;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\TestsController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\QuestionController;
 
 
   Route::middleware(['auth', 'user-access:admin,superadmin'])->prefix('admin')->group(function () {
+        Route::get('/home', [HomeController::class, 'adminHome'])->name('admin.dashboard');
         Route::get('/industries', [IndusrtyController::class, 'index'])->name('admin.industries.show');
         Route::get('/industries/data', [IndusrtyController::class, 'data'])->name('admin.industries.data');
         Route::get('/industries/create', [IndusrtyController::class, 'create'])->name('admin.industries.create');
@@ -75,7 +79,24 @@ use App\Http\Controllers\ContractController;
         
         
 
+        //Tests
+        Route::get('/tests/show', [TestsController::class, 'index'])->name('admin.tests.show');
+        Route::get('/tests/data', [TestsController::class, 'data'])->name('admin.tests.data');
+        Route::get('/tests/create', [TestsController::class, 'create'])->name('admin.tests.create');
+        Route::post('/tests/create/store', [TestsController::class, 'store'])->name('admin.tests.store');
+        Route::get('tests/{test}/edit', [TestsController::class, 'edit'])->name('admin.tests.edit');
+        Route::put('tests/{test}', [TestsController::class, 'update'])->name('admin.tests.update');
+        Route::delete('tests/{test}', [TestsController::class, 'destroy'])->name('admin.tests.destroy');
 
+        //Questions
+        Route::get('tests/{test}/questions/create', [QuestionController::class, 'create'])->name('admin.tests.add_question');
+        Route::post('tests/{test}/questions', [QuestionController::class, 'store'])->name('admin.tests.store_question');
+        //Route::get('questions/create', [QuestionController::class, 'create_question'])->name('admin.tests.select.test.question');
+        Route::get('/admin/question/data', [QuestionController::class, 'data'])->name('admin.question.data');
+        Route::get('/questions/{question}/edit', [QuestionController::class, 'edit'])->name('admin.questions.edit');
+        Route::get('/questions/{question}', [QuestionController::class, 'show'])->name('admin.questions.show');
+
+        
     });
 
 ?>

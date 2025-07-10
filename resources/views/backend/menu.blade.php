@@ -385,42 +385,37 @@
                   </li>
 
                   <!-- Components -->
-                  <li class="menu-item">
+                  <li class="menu-item {{ request()->routeIs('admin.tests*') ? 'active' : '' }}">
                     <a href="javascript:void(0)" class="menu-link menu-toggle">
                       <i class="menu-icon tf-icons ti ti-toggle-left"></i>
-                      <div data-i18n="Components">Components</div>
+                      <div data-i18n="Tests">Tests</div>
                     </a>
                     <ul class="menu-sub">
                       <!-- Cards -->
                       <li class="menu-item">
                         <a href="javascript:void(0);" class="menu-link menu-toggle">
                           <i class="menu-icon tf-icons ti ti-id"></i>
-                          <div data-i18n="Cards">Cards</div>
+                          <div data-i18n="Tests">Tests</div>
                         </a>
                         <ul class="menu-sub">
-                          <li class="menu-item">
-                            <a href="cards-basic.html" class="menu-link">
-                              <div data-i18n="Basic">Basic</div>
+                          <li class="menu-item {{ request()->routeIs('admin.tests.show') ? 'active' : '' }}">
+                            <a href="{{ route('admin.tests.show') }}" class="menu-link">
+                              <div data-i18n="Show Test">Show Test</div>
                             </a>
                           </li>
-                          <li class="menu-item">
-                            <a href="cards-advance.html" class="menu-link">
-                              <div data-i18n="Advance">Advance</div>
+                          <li class="menu-item {{ request()->routeIs('admin.tests.create') ? 'active' : '' }}">
+                            <a href="{{ route('admin.tests.create') }}" class="menu-link">
+                              <div data-i18n="Add Test">Add Test</div>
                             </a>
                           </li>
                           <li class="menu-item">
                             <a href="cards-statistics.html" class="menu-link">
-                              <div data-i18n="Statistics">Statistics</div>
+                              <div data-i18n="Show Questions">Show Questions</div>
                             </a>
                           </li>
                           <li class="menu-item">
                             <a href="cards-analytics.html" class="menu-link">
-                              <div data-i18n="Analytics">Analytics</div>
-                            </a>
-                          </li>
-                          <li class="menu-item">
-                            <a href="cards-actions.html" class="menu-link">
-                              <div data-i18n="Actions">Actions</div>
+                              <div data-i18n="Add Questions">Add Questions</div>
                             </a>
                           </li>
                         </ul>
