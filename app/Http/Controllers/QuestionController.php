@@ -50,8 +50,13 @@ class QuestionController extends Controller
         if ($request->has('test_id')) {
             $query->where('test_id', $request->test_id);
         }
+        $query->with('test');
+        $query->orderBy('id', 'desc');
 
         return DataTables::of($query)
+        ->addColumn('test_title', function ($row) {
+            return $row->test->title ?? 'N/A';
+        })
         ->addColumn('flags', function ($row) {
             if ($row->active === true || $row->active == 1) {
                 return '<span class="badge bg-label-success me-1">Active</span>';
@@ -81,4 +86,40 @@ class QuestionController extends Controller
         ->rawColumns(['flags', 'action']) // allow HTML rendering
         ->make(true);
     }
+
+    public function edit(Question $question, Request $request)
+    {
+        $testId = $request->query('test_id'); // optional, for redirect/use
+        $question->load('options');
+
+        return view('admin.questions.edit', compact('question', 'testId'));
+    }
+
+    public function update(Request $request, Question $question)
+    {
+        $request->validate([
+            'question_text' => 'required|string',
+            'options' => 'required|array|min:2',
+            'correct_option' => 'required|integer',
+        ]);
+
+        $question->question = $request->question_text;
+        $question->save();
+
+        foreach ($request->options as $index => $opt) {
+            $option = Option::find($opt['id']);
+            if ($option) {
+                $option->option_text = $opt['text'];
+                $option->flags = ($index == $request->correct_option) ? Option::FLAG_IS_CORRECT : 0;
+                $option->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'Question updated.');
+    }
+
+     public function allShow() {
+        return view('admin.questions.all-question');
+    } 
+
 }

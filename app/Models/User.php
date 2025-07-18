@@ -120,4 +120,9 @@ class User extends Authenticatable
         return $this->hasMany(UserTestAttempt::class);
     }
 
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'admin_id');
+    }
+
 }

@@ -32,7 +32,8 @@ class JobController extends Controller
 
     public function data(Request $request)
     {
-        return DataTables::of(Job::with('industry')->get())
+        
+        return DataTables::of(Job::where('user_id', auth()->id())->with('industry')->orderBy('id', 'desc'))
             ->addColumn('industry_name', function ($row) {
                 return $row->industry->name ?? 'N/A';
             })
@@ -41,6 +42,10 @@ class JobController extends Controller
             })
             ->addColumn('flags', function ($row) {
                 if ($row->active === true || $row->active == 1) {
+                    if ($row->open === true || $row->open == 1) {
+                        return '<span class="badge bg-label-primary me-1">Open</span> 
+                        <span class="badge bg-label-success me-1">Active</span>';
+                    }
                     return '<span class="badge bg-label-success me-1">Active</span>';
                 } elseif ($row->active === false || $row->active == 0) {
                     return '<span class="badge bg-label-warning me-1">Inactive</span>';
@@ -49,7 +54,7 @@ class JobController extends Controller
                 }
             })
             ->addColumn('action', function ($row) {
-                $editUrl = route('admin.industries.edit', $row->id);
+                $editUrl = route('admin.jobs.edit', $row->id);
                 $deleteUrl = route('admin.industries.destroy', $row->id);
                 return '<div class="dropdown">
                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -70,6 +75,7 @@ class JobController extends Controller
     }
 
     public function create() {
+        
         $industries = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->get();
         $countries = Country::get();
         $tests = Tests::get();
@@ -90,6 +96,7 @@ class JobController extends Controller
             'jobLocation' => 'required|in:remote,onsite',
             'industry_id' => 'required|exists:industries,id',
         ]);
+         
         
          try {
             DB::beginTransaction();
@@ -105,10 +112,12 @@ class JobController extends Controller
             $job->estimated_hours = $request->estimated_hours;
             $job->start_date = Carbon::parse($request->start_date)->format('Y-m-d');
             $job->deadline = Carbon::parse($request->deadline)->format('Y-m-d');
-            $job->country = Country::find($request->country_id)->name ?? null;
-            $job->state = State::find($request->state_id)->name ?? null;
+            $job->country = $request->country ?? null;
+            $job->state = $request->state ?? null;
             $job->city = $request->city;
             $job->address = $request->address;
+            $job->latitude = $request->latitude;
+            $job->longitude = $request->longitude;
             $job->zip = $request->zip;
             $job->radius = $request->radius;
             $job->payment_terms = $request->payment_terms;
@@ -116,7 +125,11 @@ class JobController extends Controller
             $job->terms_acceptance = htmlspecialchars($request->terms_acceptance);
             $job->description = htmlspecialchars($request->description);
             $job->addFlag(Job::FLAG_ACTIVE);
-
+            
+            $admin = auth()->user();
+            $company = $admin->company;
+            $job->company_id = $company->id;
+            
             // NDA & Admin Status
             if ($request->nda_agreement_switch == true) {
                 Log::info('NDA switch is ON');
@@ -205,85 +218,172 @@ class JobController extends Controller
 
 
     public function edit($id) {
-        $job = Job::findOrFail($id);
+    
+        $job = Job::with([
+            'skills',
+            'qualifications',
+            'certifications',
+            'tests',
+            'tools'
+        ])->findOrFail($id);
+    
         $industries = Industry::whereRaw('`flags` & ? = ?', [Industry::FLAG_ACTIVE, Industry::FLAG_ACTIVE])->get();
+
+        // All static/shared data
         $skills = Skill::all();
-        return view('admin.jobs.edit', compact('job', 'industries', 'skills'));
+        $tests = Tests::all();
+        $tools = Tool::all();
+        $certifications = Certification::all();
+
+        return view('admin.jobs.edit', compact(
+            'job',
+            'industries',
+            'skills',
+            'tests',
+            'tools',
+            'certifications'
+        ));
     }
 
-    public function update(Request $request, $id) {
-    
-        $job = Job::findOrFail($id);
-       
-        $request->validate([        
+    public function update(Request $request, Job $job) {
+
+        $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'budget' => 'nullable|numeric',
-            'deadline' => 'nullable|date',
-            'industry_id' => 'required|exists:industries,id',
+            'budget' => 'required|numeric|min:1',
             'jobType' => 'required|in:fixed,hourly',
             'jobLocation' => 'required|in:remote,onsite',
-            'status' => 'required|in:1,0',
-           // 'skill_ids' => 'nullable|array',
-            //'skill_ids.*' => 'exists:skills,id',
-            'status_admin' => 'nullable|in:open,in_progress,completed,cancelled'
+            'industry_id' => 'required|exists:industries,id',
         ]);
+        
 
-    // Update fields
-    $job->title = $request->title;
-    $job->description = $request->description;
-    $job->budget = $request->budget;
-    $job->deadline = Carbon::createFromFormat('d/m/Y', $request->deadline)->format('Y-m-d');
-    $job->industry_id = $request->industry_id;
-    $job->state = $request->state;
-    $job->city = $request->city;
+        try {
+            DB::beginTransaction();
 
-    $job->removeFlag(Job::FLAG_FIXED);
-    $job->removeFlag(Job::FLAG_HOURLY);
-    $job->removeFlag(Job::FLAG_ONSITE);
-    $job->removeFlag(Job::FLAG_REMOTE);
-    $job->removeFlag(Job::FLAG_IN_PROGRESS);
-    $job->removeFlag(Job::FLAG_ACTIVE);
-    $job->removeFlag(Job::FLAG_OPEN);
-    $job->removeFlag(Job::FLAG_COMPLETED);
-    $job->removeFlag(Job::FLAG_CANCELLED);
+            // Update Job Fields
+            $job->title = $request->title;
+            $job->industry_id = $request->industry_id;
+            $job->budget = $request->budget;
+            $job->fixed_rate = $request->fixed_rate;
+            $job->rate_per_hour = $request->hourly_rate;
+            $job->estimated_hours = $request->estimated_hours;
+            $job->start_date = Carbon::parse($request->start_date)->format('Y-m-d');
+            $job->deadline = Carbon::parse($request->deadline)->format('Y-m-d');
+            $job->country = $request->country ?? null;
+            $job->state = $request->state ?? null;
+            $job->city = $request->city;
+            $job->address = $request->address;
+            $job->latitude = $request->latitude;
+            $job->longitude = $request->longitude;
+            $job->zip = $request->zip;
+            $job->radius = $request->radius;
+            $job->payment_terms = $request->payment_terms;
+            $job->conditions = htmlspecialchars($request->conditions);
+            $job->terms_acceptance = htmlspecialchars($request->terms_acceptance);
+            $job->description = htmlspecialchars($request->description);
 
-    $job->addFlag($request->jobType == 'fixed' ? Job::FLAG_FIXED : Job::FLAG_HOURLY);
-    $job->addFlag($request->jobLocation == 'remote' ? Job::FLAG_REMOTE : Job::FLAG_ONSITE);
+            // Reset Flags before updating
+            $job->removeFlag(Job::FLAG_ACTIVE);
+            $job->removeFlag(Job::FLAG_NDA_AGREMENT);
+            $job->removeFlag(Job::FLAG_FIXED);
+            $job->removeFlag(Job::FLAG_HOURLY);
+            $job->removeFlag(Job::FLAG_REMOTE);
+            $job->removeFlag(Job::FLAG_ONSITE);
+            $job->removeFlag(Job::FLAG_OPEN);
+            $job->removeFlag(Job::FLAG_IN_PROGRESS);
+            $job->removeFlag(Job::FLAG_COMPLETED);
+            $job->removeFlag(Job::FLAG_CANCELLED);
+        
 
-   if ($request->status_admin == 'open') {
-    $job->addFlag(Job::FLAG_OPEN);
+            $job->addFlag(Job::FLAG_ACTIVE);
 
-   }else if ($request->status_admin == 'in_progress') {
-        $job->addFlag(Job::FLAG_IN_PROGRESS);
+            if ($request->nda_agreement_switch == true) {
+                $job->addFlag(Job::FLAG_NDA_AGREMENT);                
+            }
 
-   } else if ($request->status_admin == 'completed') {
-    $job->addFlag(Job::FLAG_COMPLETED);
+            if ($request->jobType == 'fixed') {
+                $job->addFlag(Job::FLAG_FIXED);
+            } else {
+                $job->addFlag(Job::FLAG_HOURLY);
+            }
 
-   } else if ($request->status_admin == 'cancelled') {
-    $job->addFlag(Job::FLAG_CANCELLED);
+            if ($request->jobLocation == 'remote') {
+                $job->addFlag(Job::FLAG_REMOTE);
+            } else {
+                $job->addFlag(Job::FLAG_ONSITE);
+            }
 
-   }
+            switch ($request->superadmin_switch) {
+                case 'open':
+                    $job->addFlag(Job::FLAG_OPEN);
+                    break;
+                case 'in_progress':
+                    $job->addFlag(Job::FLAG_IN_PROGRESS);
+                    break;
+                case 'completed':
+                    $job->addFlag(Job::FLAG_COMPLETED);
+                    break;
+                case 'cancelled':
+                    $job->addFlag(Job::FLAG_CANCELLED);
+                    break;
+                default:
+                    $job->addFlag(Job::FLAG_IN_PROGRESS);
+            }
 
+            $job->save();
 
-    if ($request->status == '1') {
-        $job->addFlag(Job::FLAG_ACTIVE);
+            // Update or Create Qualifications
+            $job->qualifications()->updateOrCreate(
+                ['job_id' => $job->id],
+                [
+                    'education_level' => $request->education_level,
+                    'min_years_experience' => $request->min_years_experience,
+                    'field' => $request->field_of_study,
+                    'language' => $request->language,
+                ]
+            );
+
+            // Sync Skills
+            if ($request->filled('skill_ids')) {
+                $job->skills()->sync($request->skill_ids);
+            }
+
+            // Sync Certifications
+            if ($request->filled('certifications')) {
+                $job->certifications()->sync($request->certifications);
+            }
+
+            // Update Tests
+            $job->tests()->delete(); // Delete existing tests before re-adding
+            if ($request->test_swtich === 'on' && $request->has('test')) {
+                foreach ($request->test as $test) {
+                    $job->tests()->create([
+                        'test_id' => $test['test_id'],
+                        'scoring_criteria' => $test['scoring_criteria'],
+                    ]);
+                }
+            }
+
+            // Sync Tools
+            if ($request->tools_swtich === 'on' && $request->has('tools')) {
+                $job->tools()->sync($request->tools);
+            }
+
+            DB::commit();
+
+            return response()->json(['success' => true, 'job_id' => $job->id]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Job update failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()->withInput()->with('error', 'Job update failed. Please try again.');
     }
-
-    // Optional admin status (only if superadmin)
-    // if (auth()->user()->type == 'superadmin' && $request->has('status_admin')) {
-    //     $job->status_admin = $request->status_admin;
-    // }
-
-    $job->save();
-
-    // Sync skills (many-to-many)
-    if ($request->has('skill_ids')) {
-        $job->skills()->sync($request->skill_ids);
+       
     }
-
-    return redirect()->route('show.jobs')->with('success', 'Job updated successfully.');
-}
 
     public function data_api(Request $request)
     {
@@ -313,6 +413,43 @@ class JobController extends Controller
             abort(404, 'Job not found');
         }
         return view('user.jobs.detail', compact('job'));
+    }
+
+    public function job_per_pay($id) {
+       $job = Job::find($id);
+
+        $budget = $job->budget; //$request->input('budget', 1500.00);
+        $fixedRate = $job->fixed_rate;//$request->input('fixed_rate', 200.00);
+        $platformCommissionRate = 0.15; // 15% platform commission
+        $salesTaxRate = 0.056; // 5.6% Arizona sales tax
+
+        // Calculate components
+        $workerPayment = $fixedRate * (1 - $platformCommissionRate);
+        $platformCommission = $fixedRate * $platformCommissionRate;
+        $salesTax = $platformCommission * $salesTaxRate;
+        $totalJobPostingFees = $platformCommission + $salesTax;
+        $totalCharge = $fixedRate + $salesTax;
+        $totalCharge;
+
+        // Check if within budget
+        $withinBudget = $totalCharge <= $budget;
+
+        // Prepare data for view
+        $data = [
+            'budget' => number_format($budget, 2),
+            'fixed_rate' => number_format($fixedRate, 2),
+            'worker_payment' => number_format($workerPayment, 2),
+            'platform_commission' => number_format($platformCommission, 2),
+            'sales_tax' => number_format($salesTax, 2),
+            'total_charge' => number_format($totalCharge, 2),
+            'totalJobPostingFees' => number_format($totalJobPostingFees, 2),
+            'within_budget' => $withinBudget ? 'Yes' : 'No',
+        ];
+    
+        if (!$job) {
+            abort(404, 'Job not found');
+        }
+        return view('admin.jobs.commission', compact('job', 'data'));
     }
 
     public function apply(Request $request, $id)

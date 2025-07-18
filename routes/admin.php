@@ -11,7 +11,11 @@ use App\Http\Controllers\JobApplicationController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\TestsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CertificationController;
+use App\Http\Controllers\ToolController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\PayPalController;
 
 
   Route::middleware(['auth', 'user-access:admin,superadmin'])->prefix('admin')->group(function () {
@@ -55,11 +59,15 @@ use App\Http\Controllers\QuestionController;
         Route::get('/jobs', [JobController::class, 'index'])->name('admin.jobs.show');
         Route::get('/jobs/data', [JobController::class, 'data'])->name('admin.jobs.data');
         Route::post('/jobs/store', [JobController::class, 'store'])->name('job.store');
-        
-        //edit jobs
-        Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('jobs.edit');
-        Route::put('/jobs/{job}/update', [JobController::class, 'update'])->name('jobs.update');
+        Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->name('admin.jobs.edit');
+        Route::put('/jobs/{job}/update', [JobController::class, 'update'])->name('admin.jobs.update');
         Route::get('/view-jobs/{id}', [JobController::class, 'show'])->name('jobs.only.detail');
+
+        //  Job Payment
+        Route::get('/jobs/{id}', [JobController::class, 'job_per_pay'])->name('admin.jobs.pay');
+        
+        Route::post('/api/paypal/order/create', [PaypalController::class, 'orderCreate'])->name('paypal.order.create');
+        Route::post('/paypal/order/{orderId}/capture', [PaypalController::class, 'orderCapture'])->name('paypal.order.capture');
         
         // Job applications routes
         Route::get('/jobs/application/process', [JobApplicationController::class, 'process'])->name('admin.jobs.application.process');
@@ -95,8 +103,36 @@ use App\Http\Controllers\QuestionController;
         Route::get('/admin/question/data', [QuestionController::class, 'data'])->name('admin.question.data');
         Route::get('/questions/{question}/edit', [QuestionController::class, 'edit'])->name('admin.questions.edit');
         Route::get('/questions/{question}', [QuestionController::class, 'show'])->name('admin.questions.show');
+        Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('admin.questions.update');
+        Route::get('/questions/show/all', [QuestionController::class, 'allShow'])->name('admin.questions.all');
+        Route::get('/questions/datatable', [QuestionController::class, 'datatable'])->name('admin.questions.datatable');
+        // Certificates
+        Route::get('/certifications/show', [CertificationController::class, 'index'])->name('admin.certificates.index');
+        Route::get('/certifications/data', [CertificationController::class, 'data'])->name('admin.certificates.data');
+        Route::get('/certifications/create', [CertificationController::class, 'create'])->name('admin.certificates.create');
+        Route::post('/certifications/store', [CertificationController::class, 'store'])->name('admin.certificates.store');
+        Route::get('/certificates/{certificate}/edit', [CertificationController::class, 'edit'])->name('admin.certificates.edit');
+        Route::put('/certificates/{certificate}', [CertificationController::class, 'update'])->name('admin.certificates.update');
+        Route::delete('/certificates/{certificate}', [CertificationController::class, 'destroy'])->name('admin.certificates.destroy');
 
-        
+        // Tools
+        Route::get('/tools/show', [ToolController::class, 'index'])->name('admin.tools.index');
+        Route::get('/tools/data', [ToolController::class, 'data'])->name('admin.tools.data');
+        Route::get('/tools/create', [ToolController::class, 'create'])->name('admin.tools.create');
+        Route::post('/tools/store', [ToolController::class, 'store'])->name('admin.tools.store');
+        Route::get('/tools/{tool}/edit', [ToolController::class, 'edit'])->name('admin.tools.edit');
+        Route::put('/tools/{tool}', [ToolController::class, 'update'])->name('admin.tools.update');
+        Route::delete('/tools/{tool}', [ToolController::class, 'destroy'])->name('admin.tools.destroy');
+
+        // company
+        Route::get('/company/create', [CompanyController::class, 'create'])->name('admin.company.create');
+        Route::post('/company/store', [CompanyController::class, 'store'])->name('admin.company.store');
+        Route::get('/company/show', [CompanyController::class, 'show'])->name('admin.company.show');
+        Route::get('/company/data', [CompanyController::class, 'data'])->name('admin.company.data');
+        Route::get('/company/edit/{id}', [CompanyController::class, 'edit'])->name('admin.company.edit');
+       Route::put('/company/update/{id}', [CompanyController::class, 'update'])->name('admin.company.update');
+
+
     });
 
 ?>

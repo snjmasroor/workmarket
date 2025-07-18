@@ -30,4 +30,9 @@ class Industry extends Model
                     ->withPivot('industry_skill_id', 'flags')
                     ->withTimestamps();
     }
+
+    public function companies()
+    {
+        return $this->hasMany(Company::class);
+    }
 }

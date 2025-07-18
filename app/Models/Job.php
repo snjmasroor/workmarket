@@ -114,5 +114,10 @@ class Job extends Model
     {
         return $this->hasMany(Contract::class, 'job_id');
     }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
     
 }

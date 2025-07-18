@@ -49,129 +49,127 @@
     <script src="{{ asset('assets/js/config.js') }}"></script>
 
 <style>
-    .auth-cover-brand img{
-        width: 20%;
-        height: 20%;
-    }
-    .auth-cover-brand {
-        margin: -27px;
-    }
+  body,
+  html {
+    height: 100%;
+    margin: 0;
+    
+    background-size: cover;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .login-wrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+  }
+
+  .auth-card {
+    background: rgba(255, 255, 255, 0.92);
+    padding: 3rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .auth-logo img {
+    height: 55px;
+  }
+
+  .auth-card h4 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control:focus {
+    box-shadow: none;
+    border-color: #3b82f6;
+  }
+
+  .social-icons a {
+    margin: 0 6px;
+  }
+  #bg-video {
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  z-index: -1;
+}
 </style>    
 </head>
   <body>
-
-    <div class="authentication-wrapper authentication-cover">
-      <!-- Logo -->
-      <a href="index.html" class="app-brand auth-cover-brand">
-        
-          <img src="{{asset('assets/img/logo.webp')}}">
-       
-        <span class="app-brand-text demo text-heading fw-bold"></span>
+<video autoplay muted loop id="bg-video" class="position-fixed w-100 h-100 object-fit-cover z-n1">
+  <source src="{{ asset('assets/img/login.mp4') }}" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+   <div class="login-wrapper">
+  <div class="auth-card text-center">
+    <!-- Logo -->
+    <div class="auth-logo mb-4">
+      <a href="{{ url('/') }}">
+        <img src="{{ asset('assets/img/logo.webp') }}" alt="Logo">
       </a>
-      <!-- /Logo -->
-      <div class="authentication-inner row m-0">
-        <!-- /Left Text -->
-        <div class="d-none d-lg-flex col-lg-8 p-0">
-          <div class="auth-cover-bg auth-cover-bg-color d-flex justify-content-center align-items-center">
-            <img
-              src="{{asset('assets/img/illustrations/auth-login-illustration-light.png')}}"
-              alt="auth-login-cover"
-              class="my-5 auth-illustration"
-              data-app-light-img="illustrations/auth-login-illustration-light.png"
-              data-app-dark-img="illustrations/auth-login-illustration-dark.png" />
-
-            <img
-              src="{{asset('assets/img/illustrations/bg-shape-image-light.png')}}"
-              alt="auth-login-cover"
-              class="platform-bg"
-              data-app-light-img="illustrations/bg-shape-image-light.png"
-              data-app-dark-img="illustrations/bg-shape-image-dark.png" />
-          </div>
-        </div>
-        <!-- /Left Text -->
-
-        <!-- Login -->
-        <div class="d-flex col-12 col-lg-4 align-items-center authentication-bg p-sm-12 p-6">
-          <div class="w-px-400 mx-auto mt-12 pt-5">
-            <h4 class="mb-1">Welcome to GrowNest! 👋</h4>
-            <p class="mb-6">Please sign-in to your account and start the adventure</p>
-
-              <form id="formAuthentication" class="mb-4"action="{{ route('login') }}" method="POST">
-                @csrf
-                <div class="mb-6">
-                  <label for="email" class="form-label">Email or Username</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="email"
-                    name="email" value="{{ old('email') }}"
-                    placeholder="Enter your email or username"
-                    autofocus />
-                </div>
-                <div class="mb-6 form-password-toggle">
-                  <label class="form-label" for="password">Password</label>
-                  <div class="input-group input-group-merge">
-                    <input
-                      type="password"
-                      id="password"
-                      class="form-control"
-                      name="password"
-                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                      aria-describedby="password" />
-                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
-                  </div>
-                </div>
-                <div class="my-8">
-                  <div class="d-flex justify-content-between">
-                    <div class="form-check mb-0 ms-2">
-                      <input class="form-check-input" type="checkbox" id="remember-me" />
-                      <label class="form-check-label" for="remember-me"> Remember Me </label>
-                    </div>
-                     @if (Route::has('password.request'))
-                        <a class="btn btn-link" href="{{ route('password.request') }}">
-                            <p class="mb-0"> {{ __('Forgot Your Password?') }} </p>
-                        </a>
-                    @endif
-                  </div>
-                </div>
-                <div class="mb-6">
-                  <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
-                </div>
-              </form>
-
-             <p class="text-center">
-              <span>New on our platform?</span>
-              <a href="auth-register-cover.html">
-                <span>Create an account</span>
-              </a>
-            </p>
-
-            <div class="divider my-6">
-              <div class="divider-text">or</div>
-            </div>
-
-            <div class="d-flex justify-content-center">
-              <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-facebook me-1_5">
-                <i class="tf-icons ti ti-brand-facebook-filled"></i>
-              </a>
-
-              <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-twitter me-1_5">
-                <i class="tf-icons ti ti-brand-twitter-filled"></i>
-              </a>
-
-              <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-github me-1_5">
-                <i class="tf-icons ti ti-brand-github-filled"></i>
-              </a>
-
-              <a href="javascript:;" class="btn btn-sm btn-icon rounded-pill btn-text-google-plus">
-                <i class="tf-icons ti ti-brand-google-filled"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-        <!-- /Login -->
-      </div>
     </div>
+
+    <!-- Title -->
+    <h4>Welcome to GrowNest! 👋</h4>
+    <p class="mb-4 text-muted">Please sign in to continue</p>
+
+    <!-- Login Form -->
+    <form action="{{ route('login') }}" method="POST">
+      @csrf
+
+      <div class="mb-3 text-start">
+        <label class="form-label">Email or Username</label>
+        <input type="text" name="email" class="form-control" value="{{ old('email') }}" required autofocus placeholder="Enter your email or username">
+      </div>
+
+      <div class="mb-3 text-start">
+        <label class="form-label">Password</label>
+        <div class="input-group">
+          <input type="password" name="password" class="form-control" placeholder="********" required>
+          <span class="input-group-text"><i class="ti ti-eye-off"></i></span>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="remember-me">
+          <label class="form-check-label" for="remember-me">Remember Me</label>
+        </div>
+        @if (Route::has('password.request'))
+          <a href="{{ route('password.request') }}" class="text-decoration-none">Forgot Password?</a>
+        @endif
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+
+      <p class="mb-2">New on our platform? <a href="{{ route('user.register.form') }}">Create an account</a></p>
+
+      <div class="divider my-3">
+        <span class="text-muted">or sign in with</span>
+      </div>
+
+      <div class="social-icons d-flex justify-content-center">
+        <a href="#" class="btn btn-sm btn-icon btn-outline-primary rounded-circle">
+          <i class="ti ti-brand-facebook-filled"></i>
+        </a>
+        <a href="#" class="btn btn-sm btn-icon btn-outline-info rounded-circle">
+          <i class="ti ti-brand-twitter-filled"></i>
+        </a>
+        <a href="#" class="btn btn-sm btn-icon btn-outline-dark rounded-circle">
+          <i class="ti ti-brand-github-filled"></i>
+        </a>
+        <a href="#" class="btn btn-sm btn-icon btn-outline-danger rounded-circle">
+          <i class="ti ti-brand-google-filled"></i>
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
 
 
        <!-- Core JS -->
